@@ -358,13 +358,28 @@
     </div>
 
     <script>
-      // Create Camp Nou stadium visualization using Canvas 2D API
-      // This will be more recognizable than the abstract Three.js version
+      // Add error handler at the VERY BEGINNING
+      window.addEventListener("error", function (e) {
+        console.error("JavaScript Error:", e.error);
+        console.error("Error at:", e.filename, "line:", e.lineno);
+        // Don't show alert - let's just log and continue
+      });
 
+      // Create Camp Nou stadium visualization using Canvas 2D API
       class StadiumBackground {
         constructor() {
           this.canvas = document.getElementById("stadium-canvas");
+          if (!this.canvas) {
+            console.error("Canvas element not found!");
+            return;
+          }
+
           this.ctx = this.canvas.getContext("2d");
+          if (!this.ctx) {
+            console.error("Canvas context not supported!");
+            return;
+          }
+
           this.width = window.innerWidth;
           this.height = window.innerHeight;
           this.canvas.width = this.width;
@@ -738,7 +753,9 @@
 
           this.drawStadium();
 
-          requestAnimationFrame(() => this.animate());
+          if (this.ctx) {
+            requestAnimationFrame(() => this.animate());
+          }
         }
       }
 
@@ -763,7 +780,6 @@
               prompt: "",
               type: "empty",
             },
-
             {
               prompt: "C:\\Users\\HI>",
               command: "cd camp-nou-stadium",
@@ -929,9 +945,9 @@
               break;
             case "command":
               lineElement.innerHTML = `
-                            <span class="prompt">${line.prompt}</span>
-                            <span class="command">${line.command}</span>
-                        `;
+            <span class="prompt">${line.prompt}</span>
+            <span class="command">${line.command}</span>
+          `;
               break;
             case "error":
               lineElement.innerHTML = `<span class="error">${line.prompt}</span>`;
@@ -1019,11 +1035,12 @@
           const indicator = document.createElement("div");
           indicator.className = "next-indicator";
           indicator.innerHTML = `
-            <div>📬 <strong>Message Incoming...</strong></div>
-            <div style="margin-top: 10px;">⌨️ Press <kbd>ENTER</kbd> or click here to continue</div>
-            <div class="key-hint">(There's more waiting for you...)</div>
-          `;
+        <div>📬 <strong>Message Incoming...</strong></div>
+        <div style="margin-top: 10px;">⌨️ Press <kbd>ENTER</kbd> or click here to continue</div>
+        <div class="key-hint">(There's more waiting for you...)</div>
+      `;
 
+          // Fixed: Add the missing goToNextPage method
           indicator.addEventListener("click", () => this.goToNextPage());
           continueLine.appendChild(indicator);
 
@@ -1042,6 +1059,128 @@
           );
         }
 
+        // ADD THIS MISSING METHOD!
+        goToNextPage() {
+          // Clear the terminal with a cool effect
+          const terminal = document.getElementById("terminal");
+          terminal.style.opacity = "0";
+          terminal.style.transition = "opacity 0.5s";
+
+          // Show VR instruction message FIRST
+          const vrInstructions = document.createElement("div");
+          vrInstructions.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      `;
+
+          vrInstructions.innerHTML = `
+        <div style="
+          background: rgba(12, 12, 12, 0.95);
+          border: 1px solid #555;
+          border-radius: 3px;
+          padding: 30px;
+          max-width: 600px;
+          font-family: 'Consolas', 'Monaco', monospace;
+          color: #ccc;
+          box-shadow: 0 0 40px rgba(0, 0, 0, 0.9);
+        ">
+          <div style="margin-bottom: 20px;">
+            <span style="color: #4af626; font-weight: bold;">C:\\Users\\HI\\camp-nou-stadium></span>
+            <span style="color: #ddd;">launch_vr_experience.exe</span>
+          </div>
+          <div style="color: #4af626; margin-bottom: 20px; font-size: 18px; font-weight: bold;">
+            WE ARE CURRENTLY AT YOUR FAVOURITE PLACE,
+          </div>
+          <div style="color: #4af626; margin-bottom: 20px; font-size: 22px; font-weight: bold; text-align: center;">
+            THE CAMP NOU STADIUM!!
+          </div>
+          <div style="color: #ddd; margin-bottom: 25px; font-size: 16px; line-height: 1.5;">
+            You're about to enter the Camp Nou 360° VR experience.<br>
+            <span style="color: #4af626;">•</span> Use your mouse to look around<br>
+            <span style="color: #4af626;">•</span> Scroll to zoom in/out<br>
+            <span style="color: #4af626;">•</span> Explore every corner of the stadium!<br>
+            <br>
+            <span style="color: #ffd700;">When you're done exploring, close the VR tab to return.</span>
+          </div>
+          <div style="margin-top: 25px; text-align: center;">
+            <button onclick="window.open('https://www.360cities.net/image/camp-nou-stadium/vr', '_blank')" 
+                    style="
+                      background: #4af626;
+                      color: #000;
+                      border: none;
+                      padding: 12px 30px;
+                      font-family: 'Consolas', monospace;
+                      font-size: 16px;
+                      font-weight: bold;
+                      border-radius: 3px;
+                      cursor: pointer;
+                      transition: all 0.3s;
+                    "
+                    onmouseover="this.style.background='#7af856'"
+                    onmouseout="this.style.background='#4af626'">
+              LAUNCH VR EXPERIENCE
+            </button>
+            <div style="margin-top: 25px;">
+              <button onclick="window.location.href='barcelona-messages.html'"
+                      style="
+                        background: transparent;
+                        color: #4af626;
+                        border: 1px solid #4af626;
+                        padding: 10px 25px;
+                        font-family: 'Consolas', monospace;
+                        font-size: 14px;
+                        border-radius: 3px;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                      "
+                      onmouseover="this.style.background='rgba(74, 246, 38, 0.1)'"
+                      onmouseout="this.style.background='transparent'">
+                Skip to Messages from Team
+              </button>
+              <div style="margin-top: 10px; color: #999; font-size: 11px;">
+                (Will take you directly to player messages)
+              </div>
+            </div>
+            <div style="margin-top: 25px;">
+              <button onclick="window.location.href='personal-message.html'"
+                      style="
+                        background: transparent;
+                        color: #ff6b8b;
+                        border: 1px solid #ff6b8b;
+                        padding: 10px 25px;
+                        font-family: 'Consolas', monospace;
+                        font-size: 14px;
+                        border-radius: 3px;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                        margin-top: 10px;
+                      "
+                      onmouseover="this.style.background='rgba(255, 107, 139, 0.1)'"
+                      onmouseout="this.style.background='transparent'">
+                Personal Message from Friend
+              </button>
+              <div style="margin-top: 10px; color: #999; font-size: 11px;">
+                (A special personal message just for you!)
+              </div>
+            </div>
+            <div style="margin-top: 15px; color: #999; font-size: 12px;">
+              <span style="color: #4af626;">↗</span> Will open in new tab
+            </div>
+          </div>
+        </div>
+      `;
+
+          document.body.appendChild(vrInstructions);
+        }
+
         processNextLine() {
           if (this.currentLine < this.commands.length) {
             this.addLine(this.commands[this.currentLine]);
@@ -1050,9 +1189,9 @@
             const cursorElement = document.createElement("div");
             cursorElement.className = "terminal-line";
             cursorElement.innerHTML = `
-                        <span class="path">C:\\Users\\HI\\camp-nou-stadium></span>
-                        <span class="interactive-cursor"></span>
-                    `;
+          <span class="path">C:\\Users\\HI\\camp-nou-stadium></span>
+          <span class="interactive-cursor"></span>
+        `;
             this.content.appendChild(cursorElement);
             this.content.scrollTop = this.content.scrollHeight;
 
@@ -1072,65 +1211,75 @@
 
       // Initialize everything when page loads
       window.onload = function () {
-        // Initialize stadium background
-        const stadium = new StadiumBackground();
+        try {
+          // Initialize stadium background
+          const stadium = new StadiumBackground();
 
-        // Initialize terminal
-        const terminal = new Terminal();
-        terminal.start();
+          // Initialize terminal
+          const terminal = new Terminal();
+          terminal.start();
 
-        // Add interactivity to terminal buttons
-        document.querySelectorAll(".terminal-button").forEach((button) => {
-          button.addEventListener("click", function () {
-            const terminal = document.getElementById("terminal");
-            if (this.classList.contains("close")) {
-              terminal.style.opacity = "0.7";
-              terminal.style.transition = "opacity 0.3s";
-            } else if (this.classList.contains("minimize")) {
-              terminal.style.transform = "translate(-50%, -50%) scale(0.9)";
-              terminal.style.transition = "transform 0.3s";
-            } else if (this.classList.contains("maximize")) {
-              terminal.style.transform = "translate(-50%, -50%) scale(1)";
-              terminal.style.transition = "transform 0.3s";
+          // Add interactivity to terminal buttons
+          document.querySelectorAll(".terminal-button").forEach((button) => {
+            button.addEventListener("click", function () {
+              const terminal = document.getElementById("terminal");
+              if (this.classList.contains("close")) {
+                terminal.style.opacity = "0.7";
+                terminal.style.transition = "opacity 0.3s";
+              } else if (this.classList.contains("minimize")) {
+                terminal.style.transform = "translate(-50%, -50%) scale(0.9)";
+                terminal.style.transition = "transform 0.3s";
+              } else if (this.classList.contains("maximize")) {
+                terminal.style.transform = "translate(-50%, -50%) scale(1)";
+                terminal.style.transition = "transform 0.3s";
+              }
+            });
+          });
+
+          // Add keyboard shortcuts for clearing
+          document.addEventListener("keydown", (e) => {
+            if (e.ctrlKey && e.key === "l") {
+              // Clear terminal
+              document.getElementById("terminal-content").innerHTML = "";
+              terminal.currentLine = 0;
+              terminal.start();
             }
           });
-        });
 
-        // Add keyboard shortcuts for clearing
-        document.addEventListener("keydown", (e) => {
-          if (e.ctrlKey && e.key === "l") {
-            // Clear terminal
-            document.getElementById("terminal-content").innerHTML = "";
-            terminal.currentLine = 0;
-            terminal.start();
-          }
-        });
+          console.log("Page loaded successfully!");
+        } catch (error) {
+          console.error("Error during initialization:", error);
+          // Show a simple fallback if everything fails
+          document.body.innerHTML = `
+        <div style="padding: 50px; text-align: center; color: white; background: black; height: 100vh;">
+          <h1 style="color: #00ff41;">🎉 Happy 23rd Birthday Charith! 🎉</h1>
+          <p style="font-size: 1.2rem; margin: 30px 0;">
+            Something went wrong with the fancy animation, but your birthday messages are ready!
+          </p>
+          <div style="margin: 40px;">
+            <a href="barcelona-messages.html" style="color: #4af626; text-decoration: underline; font-size: 1.3rem; display: block; margin: 15px 0;">
+              📨 Click here for Messages from FC Barcelona Team
+            </a>
+            <a href="personal-message.html" style="color: #ff6b8b; text-decoration: underline; font-size: 1.3rem; display: block; margin: 15px 0;">
+              💌 Click here for Personal Message from Friend
+            </a>
+          </div>
+          <p style="color: #aaa; margin-top: 50px;">
+            Made with ❤️ for Charith's 23rd birthday
+          </p>
+        </div>
+      `;
+        }
       };
 
-      // ADD THIS AT THE VERY TOP of your <> section
-      window.addEventListener("error", function (e) {
-        console.error("JavaScript Error:", e.error);
-        alert("Error loading page. Please check console for details.");
-
-        // Fallback: Show simple content if fancy version fails
-        document.body.innerHTML = `
-      <div style="padding: 50px; text-align: center; color: white; background: black;">
-        <h1 style="color: #00ff41;">Happy 23rd Birthday Charith!</h1>
-        <p style="font-size: 1.2rem; margin: 20px 0;">
-          The fancy animation failed to load, but here are your birthday messages:
-        </p>
-        <div style="margin: 30px;">
-          <a href="barcelona-messages.html" style="color: #4af626; text-decoration: underline; font-size: 1.1rem;">
-            📨 Messages from FC Barcelona Team
-          </a>
-          <br><br>
-          <a href="personal-message.html" style="color: #ff6b8b; text-decoration: underline; font-size: 1.1rem;">
-            💌 Personal Message from Friend
-          </a>
-        </div>
-      </div>
-    `;
-      });
+      // Make sure page loads even if there are minor errors
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => {
+          console.log("DOM loaded, initializing...");
+        });
+      } else {
+        console.log("DOM already loaded, initializing...");
+      }
     </script>
   </body>
 </html>
