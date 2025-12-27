@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap"
       rel="stylesheet"
     />
 
@@ -31,7 +31,7 @@
         background-color: #0a0a0a;
         color: #f5f5f5;
         overflow-x: hidden;
-        height: 600vh; /* 6 sections x 100vh */
+        height: 600vh;
       }
 
       /* Main gallery container - fixed position */
@@ -118,54 +118,45 @@
         transform: scale(1.08);
       }
 
-      /* Final message card */
-      .final-message-card {
-        background: linear-gradient(
-          135deg,
-          rgba(26, 35, 50, 0.95) 0%,
-          rgba(40, 30, 45, 0.95) 100%
-        );
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-        text-align: center;
-        font-size: 20px;
-        font-weight: 500;
+      /* Birthday Wish Button - Top Corner */
+      .birthday-wish-button {
+        position: fixed;
+        top: 70px;
+        right: 20px;
+        background: #111111;
         color: #ffffff;
-        line-height: 1.4;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        position: relative;
-        overflow: hidden;
-        cursor: pointer;
-      }
-
-      .final-message-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, #8a715e, transparent);
-      }
-
-      .final-message-card:hover {
-        background: linear-gradient(
-          135deg,
-          rgba(30, 40, 55, 0.95) 0%,
-          rgba(45, 35, 50, 0.95) 100%
-        );
-        border-color: rgba(138, 113, 94, 0.3);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-      }
-
-      .final-text {
-        font-family: "Playfair Display", serif;
+        border: 1px solid #2a2a2a;
+        padding: 14px 28px;
+        font-family: "Space Grotesk", sans-serif;
         font-weight: 600;
-        letter-spacing: 0.5px;
-        color: #d4c6b8;
+        font-size: 15px;
+        cursor: pointer;
+        z-index: 100;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-radius: 0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .birthday-wish-button:hover {
+        background: #1a1a1a;
+        border-color: #3a3a3a;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5);
+      }
+
+      .birthday-wish-button:hover .cake-icon {
+        transform: rotate(15deg) scale(1.2);
+      }
+
+      .cake-icon {
+        font-size: 20px;
+        transition: all 0.3s ease;
       }
 
       /* Navigation styling */
@@ -272,103 +263,302 @@
         position: fixed;
         top: 20px;
         right: 20px;
-        background: rgba(138, 113, 94, 0.9);
+        background: #111111;
         color: #ffffff;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 4px;
-        font-family: "Inter", sans-serif;
-        font-weight: 500;
+        border: 1px solid #2a2a2a;
+        padding: 12px 24px;
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 600;
+        font-size: 14px;
         cursor: pointer;
         z-index: 100;
         transition: all 0.3s ease;
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        border-radius: 0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
       }
 
       .back-button:hover {
-        background: rgba(155, 135, 120, 0.9);
-        transform: translateY(-1px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        background: #1a1a1a;
+        border-color: #3a3a3a;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5);
       }
 
-      /* Final Message Overlay */
-      .message-overlay {
+      /* Birthday Wish Overlay */
+      .wish-overlay {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(10, 10, 10, 0.95);
+        background: rgba(0, 0, 0, 0.95);
         display: none;
         justify-content: center;
         align-items: center;
         z-index: 1000;
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(15px);
+        padding: 20px;
       }
 
-      .message-content {
-        background: linear-gradient(
-          135deg,
-          rgba(20, 25, 35, 0.95) 0%,
-          rgba(35, 30, 40, 0.95) 100%
-        );
-        padding: 50px;
-        border-radius: 12px;
-        max-width: 600px;
-        width: 90%;
-        text-align: center;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      .wish-content {
+        background: #111111;
+        max-width: 800px;
+        width: 100%;
+        height: 85vh;
+        max-height: 85vh;
+        border: 1px solid #2a2a2a;
+        box-shadow: 0 25px 100px rgba(0, 0, 0, 0.8);
         position: relative;
-        transform: translateY(20px);
+        transform: translateY(30px);
         opacity: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
       }
 
-      .message-content::before {
+      .wish-header {
+        background: #0a0a0a;
+        padding: 30px 40px;
+        border-bottom: 1px solid #2a2a2a;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .wish-header::before {
         content: "";
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        height: 3px;
+        height: 1px;
         background: linear-gradient(90deg, transparent, #8a715e, transparent);
       }
 
-      .message-title {
-        font-family: "Playfair Display", serif;
-        font-size: 32px;
-        font-weight: 600;
-        color: #d4c6b8;
-        margin-bottom: 30px;
+      .wish-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 42px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        position: relative;
+        display: inline-block;
+      }
+
+      .wish-title::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, #8a715e, transparent);
+      }
+
+      .wish-subtitle {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 14px;
+        color: #8a8a8a;
         letter-spacing: 1px;
+        margin-top: 5px;
       }
 
-      .message-text {
-        font-size: 18px;
-        line-height: 1.8;
-        color: #b8b0a8;
-        margin-bottom: 40px;
+      .wish-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 40px;
+        position: relative;
+      }
+
+      /* Custom scrollbar */
+      .wish-body::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .wish-body::-webkit-scrollbar-track {
+        background: #1a1a1a;
+      }
+
+      .wish-body::-webkit-scrollbar-thumb {
+        background: #8a715e;
+        border-radius: 3px;
+      }
+
+      .wish-body::-webkit-scrollbar-thumb:hover {
+        background: #9c816c;
+      }
+
+      .cake-container {
+        text-align: center;
+        margin: 30px 0 40px;
+        position: relative;
+      }
+
+      .cake {
+        font-size: 80px;
+        filter: drop-shadow(0 0 20px rgba(138, 113, 94, 0.4));
+        animation: float 4s ease-in-out infinite;
+        display: inline-block;
+      }
+
+      .candle {
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 24px;
+        animation: flicker 1.5s ease-in-out infinite;
+        filter: drop-shadow(0 0 10px rgba(255, 100, 0, 0.5));
+      }
+
+      .wish-text {
         font-family: "Inter", sans-serif;
-        font-weight: 400;
+        font-size: 18px;
+        line-height: 1.9;
+        color: #cccccc;
+        text-align: left;
       }
 
-      .close-message {
+      .wish-text p {
+        margin-bottom: 25px;
+        position: relative;
+        padding-left: 20px;
+      }
+
+      .wish-text p::before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        top: 0;
+        color: #8a715e;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 500;
+      }
+
+      .wish-text p:first-of-type {
+        font-size: 20px;
+        color: #ffffff;
+        font-weight: 500;
+        margin-bottom: 30px;
+      }
+
+      .wish-text p:last-child {
+        text-align: center;
+        font-style: italic;
+        color: #8a715e;
+        font-size: 22px;
+        margin-top: 40px;
+        padding: 20px;
+        border-top: 1px solid #2a2a2a;
+        border-bottom: 1px solid #2a2a2a;
+        background: rgba(138, 113, 94, 0.05);
+      }
+
+      .wish-text p:last-child::before {
+        display: none;
+      }
+
+      .signature {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        margin-top: 10px;
+        display: block;
+      }
+
+      .wish-footer {
+        background: #0a0a0a;
+        padding: 20px 40px;
+        border-top: 1px solid #2a2a2a;
+        display: flex;
+        justify-content: center;
+        position: relative;
+      }
+
+      .wish-footer::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #8a715e, transparent);
+      }
+
+      .close-wish {
         background: transparent;
         color: #8a715e;
-        border: 1px solid rgba(138, 113, 94, 0.5);
-        padding: 12px 30px;
-        border-radius: 4px;
-        font-family: "Inter", sans-serif;
-        font-weight: 500;
+        border: 1px solid #8a715e;
+        padding: 14px 40px;
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 600;
+        font-size: 14px;
         cursor: pointer;
         transition: all 0.3s ease;
-        font-size: 16px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        border-radius: 0;
+        position: relative;
+        overflow: hidden;
       }
 
-      .close-message:hover {
-        background: rgba(138, 113, 94, 0.2);
-        border-color: #8a715e;
+      .close-wish::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(138, 113, 94, 0.2),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+
+      .close-wish:hover::before {
+        left: 100%;
+      }
+
+      .close-wish:hover {
+        background: rgba(138, 113, 94, 0.1);
+        box-shadow: 0 0 20px rgba(138, 113, 94, 0.3);
+      }
+
+      /* Animations */
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
+
+      @keyframes flicker {
+        0%,
+        100% {
+          opacity: 1;
+          transform: translateX(-50%) scale(1);
+        }
+        50% {
+          opacity: 0.8;
+          transform: translateX(-50%) scale(1.1);
+        }
+        25%,
+        75% {
+          opacity: 0.9;
+          transform: translateX(-50%) scale(0.95);
+        }
       }
 
       /* Loading animation */
@@ -418,6 +608,14 @@
         .col-nav:hover {
           width: 15%;
         }
+
+        .wish-content {
+          max-width: 700px;
+        }
+
+        .wish-title {
+          font-size: 36px;
+        }
       }
 
       @media (max-width: 768px) {
@@ -452,16 +650,72 @@
           transform: translateX(-50%);
         }
 
-        .message-content {
-          padding: 30px 20px;
+        .wish-overlay {
+          padding: 10px;
         }
 
-        .message-title {
+        .wish-content {
+          height: 90vh;
+          max-height: 90vh;
+        }
+
+        .wish-header {
+          padding: 20px;
+        }
+
+        .wish-title {
+          font-size: 28px;
+        }
+
+        .wish-body {
+          padding: 20px;
+        }
+
+        .wish-text {
+          font-size: 16px;
+        }
+
+        .wish-text p {
+          padding-left: 15px;
+        }
+
+        .cake {
+          font-size: 60px;
+        }
+
+        /* Stack buttons on mobile */
+        .back-button {
+          top: 20px;
+          right: 20px;
+          left: auto;
+        }
+
+        .birthday-wish-button {
+          top: 70px;
+          right: 20px;
+          left: auto;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .back-button {
+          padding: 10px 18px;
+          font-size: 12px;
+        }
+
+        .birthday-wish-button {
+          padding: 12px 20px;
+          font-size: 13px;
+          top: 65px;
+        }
+
+        .wish-title {
           font-size: 24px;
         }
 
-        .message-text {
-          font-size: 16px;
+        .wish-text {
+          font-size: 15px;
+          line-height: 1.7;
         }
       }
     </style>
@@ -472,45 +726,77 @@
       <div class="loading-spinner"></div>
     </div>
 
-    <!-- Back Button -->
+    <!-- Back to Terminal Button -->
     <button class="back-button" onclick="window.location.href='index.html'">
       ← Back to Terminal
+    </button>
+
+    <!-- Birthday Wish Button -->
+    <button class="birthday-wish-button" id="birthdayWishBtn">
+      <span class="cake-icon">🎂</span>
+      <span>Read Birthday Wish</span>
     </button>
 
     <!-- Fade Overlays -->
     <div class="fade-top"></div>
     <div class="fade-bottom"></div>
 
-    <!-- Final Message Overlay -->
-    <div class="message-overlay" id="messageOverlay">
-      <div class="message-content" id="messageContent">
-        <h2 class="message-title">To Bujji Konda</h2>
-        <div class="message-text">
-          <p>
-            As you turn 23, I wanted to create something that captures the
-            essence of our journey together.
-          </p>
-          <p>
-            Every photo tells a story – of laughter shared, adventures embarked
-            upon, and moments that became memories.
-          </p>
-          <p>
-            In a world that constantly changes, some things remain constant: the
-            bond we share, the understanding between us, and the knowledge that
-            no matter where life takes us, this friendship is a constant source
-            of strength and joy.
-          </p>
-          <p>
-            May this year bring you closer to your dreams, surround you with
-            love, and fill your days with the same happiness you bring to
-            others.
-          </p>
-          <p>
-            Here's to more adventures, more laughter, and more beautiful
-            memories in the making.
-          </p>
+    <!-- Birthday Wish Overlay -->
+    <div class="wish-overlay" id="wishOverlay">
+      <div class="wish-content" id="wishContent">
+        <div class="wish-header">
+          <h2 class="wish-title">Happy 23rd Birthday</h2>
+          <div class="wish-subtitle">TO BUJJI KONDA</div>
         </div>
-        <button class="close-message" id="closeMessage">Continue</button>
+
+        <div class="wish-body">
+          <div class="cake-container">
+            <div class="cake">🎂</div>
+          </div>
+
+          <div class="wish-text">
+            <p>My dear Charith babu,</p>
+
+            <p>
+              I know we've been fighting a lot these days, but I hope you put
+              that aside and accept this small virtaul gift of mine. please
+              ignore if there are any mistakes.
+            </p>
+
+            <p>
+              really greatful and thankful that you are born, thanks to your
+              parents because I wouldn't have some of the best days without you.
+              I am really proud of you, managing everything alone and giving
+              your best every single day.The saddest part is me not being able
+              to be there for you physically especially on your bday. And it
+              really hurts to see you alone but I promise that very soon I'd
+              come to you, to play every sport you want, cook your favourite
+              dishes and just pour love and lots of love!
+            </p>
+
+            <p>
+              I am always there for you, you're not alone. Let it be your
+              victories or sorrows I will be there to support you. Not just me,
+              your parents and whole family loves you a lot and are very much
+              proud, more than me.
+            </p>
+
+            <p>
+              I love you charith babu, to the amazing person you've been and to
+              the amazing person you'll be. I'm here to love all your versions
+              and ages!
+            </p>
+
+            <p>
+              With all my heart,<br />
+              <span class="signature">and Love</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="wish-footer">
+          <button class="close-wish" id="closeWish">CLOSE</button>
+        </div>
       </div>
     </div>
 
@@ -583,9 +869,10 @@
 
         // Get DOM elements
         const loading = document.getElementById("loading");
-        const messageOverlay = document.getElementById("messageOverlay");
-        const messageContent = document.getElementById("messageContent");
-        const closeMessage = document.getElementById("closeMessage");
+        const wishOverlay = document.getElementById("wishOverlay");
+        const wishContent = document.getElementById("wishContent");
+        const closeWish = document.getElementById("closeWish");
+        const birthdayWishBtn = document.getElementById("birthdayWishBtn");
         const col1 = document.getElementById("col1");
         const col2 = document.getElementById("col2");
         const col3 = document.getElementById("col3");
@@ -621,22 +908,12 @@
         }
 
         // Function to generate column items
-        function generateColumnItems(
-          columnElement,
-          isReverse = false,
-          isLastColumn = false
-        ) {
+        function generateColumnItems(columnElement, isReverse = false) {
           columnElement.innerHTML = "";
 
-          // Create shuffled image arrays for each column (using all 17 images)
-          const columnImages = shuffleArray([...allImages]);
-          let imageIndex = 0;
-
-          // We need 18 images total (6 sections × 3 images each)
+          const availableImages = [...allImages];
           const totalImagesNeeded = 18;
 
-          // Duplicate images if needed (we have 17, need 18)
-          const availableImages = [...allImages];
           while (availableImages.length < totalImagesNeeded) {
             availableImages.push(...allImages);
           }
@@ -651,27 +928,14 @@
               imgItem.className = "img-item";
               imgItem.setAttribute("data-section", section);
 
-              // Check if this is the last section and last position (for final message)
-              if (section === 5 && i === 2 && isLastColumn) {
-                imgItem.classList.add("final-message-card");
-                imgItem.innerHTML = `
-                  <div class="final-text">Something to see →</div>
-                `;
+              const img = document.createElement("img");
+              img.src = shuffledImages[section * 3 + i];
+              img.alt = `Memory ${section * 3 + i + 1}`;
 
-                // Add click event for final message
-                imgItem.addEventListener("click", showFinalMessage);
-              } else {
-                // Regular image - use the shuffled image
-                const img = document.createElement("img");
-                img.src = shuffledImages[section * 3 + i];
-                img.alt = `Memory ${section * 3 + i + 1}`;
+              const imgLoader = new Image();
+              imgLoader.src = shuffledImages[section * 3 + i];
 
-                // Preload image for better performance
-                const imgLoader = new Image();
-                imgLoader.src = shuffledImages[section * 3 + i];
-
-                imgItem.appendChild(img);
-              }
+              imgItem.appendChild(img);
 
               if (isReverse) {
                 columnElement.prepend(imgItem);
@@ -683,15 +947,14 @@
         }
 
         // Generate content for all columns
-        generateColumnItems(col1, false, false);
-        generateColumnItems(col2, true, false);
-        generateColumnItems(col3, false, true);
+        generateColumnItems(col1, false);
+        generateColumnItems(col2, true);
+        generateColumnItems(col3, false);
 
         // Set up animations
         function setupAnimations() {
           const distance = (sections - 1) * window.innerHeight;
 
-          // Animation for columns
           gsap.to(col1, {
             y: -distance,
             ease: "none",
@@ -743,34 +1006,45 @@
           });
         }
 
-        // Show final message
-        function showFinalMessage() {
-          messageOverlay.style.display = "flex";
-          gsap.to(messageContent, {
+        // Show birthday wish with animation
+        function showBirthdayWish() {
+          wishOverlay.style.display = "flex";
+
+          // Reset transform for animation
+          gsap.set(wishContent, { y: 30, opacity: 0 });
+
+          gsap.to(wishContent, {
             y: 0,
             opacity: 1,
-            duration: 0.6,
-            ease: "power2.out",
+            duration: 0.8,
+            ease: "power3.out",
+            onStart: () => {
+              // Prevent body scroll when overlay is open
+              document.body.style.overflow = "hidden";
+            },
           });
         }
 
-        // Hide final message
-        function hideFinalMessage() {
-          gsap.to(messageContent, {
-            y: 20,
+        // Hide birthday wish
+        function hideBirthdayWish() {
+          gsap.to(wishContent, {
+            y: 30,
             opacity: 0,
-            duration: 0.4,
+            duration: 0.5,
             ease: "power2.in",
             onComplete: () => {
-              messageOverlay.style.display = "none";
+              wishOverlay.style.display = "none";
+              // Restore body scroll
+              document.body.style.overflow = "auto";
             },
           });
         }
 
         // Event listeners
-        closeMessage.addEventListener("click", hideFinalMessage);
-        messageOverlay.addEventListener("click", (e) => {
-          if (e.target === messageOverlay) hideFinalMessage();
+        birthdayWishBtn.addEventListener("click", showBirthdayWish);
+        closeWish.addEventListener("click", hideBirthdayWish);
+        wishOverlay.addEventListener("click", (e) => {
+          if (e.target === wishOverlay) hideBirthdayWish();
         });
 
         // Add navigation click events
@@ -789,13 +1063,13 @@
         setupAnimations();
         updateNav();
 
-        // Hide loading screen after images load
+        // Preload all images
         const imagePromises = allImages.map((src) => {
           return new Promise((resolve) => {
             const img = new Image();
             img.src = src;
             img.onload = resolve;
-            img.onerror = resolve; // Resolve even if image fails to load
+            img.onerror = resolve;
           });
         });
 
@@ -815,6 +1089,13 @@
         window.addEventListener("resize", () => {
           ScrollTrigger.refresh();
           updateNav();
+        });
+
+        // Close overlay with Escape key
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && wishOverlay.style.display === "flex") {
+            hideBirthdayWish();
+          }
         });
       });
     </script>
