@@ -4,11 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FC Barcelona | Messages from The Team</title>
+    <!-- Preconnect to CDNs for better performance -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://unpkg.com" />
+
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
     />
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script
       type="module"
       src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
@@ -49,6 +54,17 @@
         min-height: 100vh;
         overflow-x: hidden;
         position: relative;
+      }
+
+      /* Fallback background if particles don't load */
+      .fallback-bg {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+        z-index: -2;
+        opacity: 0.8;
       }
 
       /* Minimal Particles Background */
@@ -103,6 +119,7 @@
           var(--neon-blue)
         );
         -webkit-background-clip: text;
+        background-clip: text;
         -webkit-text-fill-color: transparent;
         letter-spacing: 1px;
         margin-bottom: 8px;
@@ -262,7 +279,6 @@
       .club-logo {
         height: 35vh;
         padding-top: 35px;
-
         width: 10vw;
       }
 
@@ -598,6 +614,9 @@
       <source src="Cant del Barça.mp3" type="audio/mpeg" />
       Your browser does not support the audio element.
     </audio>
+
+    <!-- Fallback Background -->
+    <div class="fallback-bg"></div>
 
     <!-- Status Bar -->
     <div class="status-bar">
@@ -1011,202 +1030,253 @@
       Previous
     </a> -->
 
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- Local fallback for particles.js if CDN fails -->
     <script>
-      "use strict";
-
-      // Audio Control
-      const audio = document.getElementById("background-music");
-      const playPauseButton = document.getElementById("play-pause-button");
-      const playIcon = document.getElementById("play-music");
-      const pauseIcon = document.getElementById("pause-music");
-      let isPlaying = false;
-
-      function togglePlayPause() {
-        if (isPlaying) {
-          audio.pause();
-          playIcon.classList.remove("hidden");
-          pauseIcon.classList.add("hidden");
-        } else {
-          audio.play().catch((e) => {
-            console.log("Audio play failed:", e);
-            // Auto-play on user interaction
-            document.addEventListener(
-              "click",
-              function initAudio() {
-                audio.play();
-                playIcon.classList.add("hidden");
-                pauseIcon.classList.remove("hidden");
-                isPlaying = true;
-                document.removeEventListener("click", initAudio);
-              },
-              { once: true }
-            );
-          });
-          playIcon.classList.add("hidden");
-          pauseIcon.classList.remove("hidden");
+      // Try to load particles.js from CDN, fall back to local or skip
+      function loadParticles() {
+        if (typeof particlesJS === "undefined") {
+          console.log("Particles.js not available, using fallback background");
+          document.querySelector(".fallback-bg").style.opacity = "1";
         }
-        isPlaying = !isPlaying;
       }
 
-      playPauseButton.addEventListener("click", togglePlayPause);
+      // Load Swiper from CDN with fallback
+      const swiperScript = document.createElement("script");
+      swiperScript.src =
+        "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js";
+      swiperScript.onload = function () {
+        // After Swiper loads, try to load particles
+        const particlesScript = document.createElement("script");
+        particlesScript.src =
+          "https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js";
+        particlesScript.onload = function () {
+          initApp();
+          loadParticles();
+        };
+        particlesScript.onerror = function () {
+          initApp();
+          loadParticles();
+        };
+        document.head.appendChild(particlesScript);
+      };
+      swiperScript.onerror = function () {
+        console.error("Swiper failed to load");
+        // Show error message or fallback
+      };
+      document.head.appendChild(swiperScript);
 
-      audio.addEventListener("ended", function () {
-        audio.currentTime = 0;
-        audio.play();
-      });
+      function initApp() {
+        // Audio Control
+        const audio = document.getElementById("background-music");
+        const playPauseButton = document.getElementById("play-pause-button");
+        const playIcon = document.getElementById("play-music");
+        const pauseIcon = document.getElementById("pause-music");
+        let isPlaying = false;
 
-      // Initialize Swiper with Horizontal Scroll
-      const swiper = new Swiper(".swiper", {
-        direction: "horizontal",
-        loop: false,
-        speed: 600,
-        slidesPerView: "auto",
-        centeredSlides: true,
-        spaceBetween: 20,
-        grabCursor: true,
-        keyboard: {
-          enabled: true,
-        },
-        mousewheel: {
-          forceToAxis: true,
-        },
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-        },
-        pagination: {
-          el: ".swiper-pagination",
-          clickable: true,
-        },
-        breakpoints: {
-          320: {
-            slidesPerView: 1,
-            spaceBetween: 10,
-          },
-          768: {
-            slidesPerView: "auto",
-            spaceBetween: 20,
-          },
-        },
-      });
-
-      // Card click functionality
-      document.querySelectorAll(".swiper-slide").forEach((card) => {
-        card.addEventListener("click", function (e) {
-          // Prevent triggering when clicking on navigation buttons
-          if (
-            e.target.closest(".swiper-button-next") ||
-            e.target.closest(".swiper-button-prev") ||
-            e.target.closest(".swiper-pagination")
-          ) {
-            return;
+        function togglePlayPause() {
+          if (isPlaying) {
+            audio.pause();
+            playIcon.classList.remove("hidden");
+            pauseIcon.classList.add("hidden");
+          } else {
+            audio.play().catch((e) => {
+              console.log("Audio play failed:", e);
+              // Auto-play on user interaction
+              document.addEventListener(
+                "click",
+                function initAudio() {
+                  audio.play();
+                  playIcon.classList.add("hidden");
+                  pauseIcon.classList.remove("hidden");
+                  isPlaying = true;
+                  document.removeEventListener("click", initAudio);
+                },
+                { once: true }
+              );
+            });
+            playIcon.classList.add("hidden");
+            pauseIcon.classList.remove("hidden");
           }
+          isPlaying = !isPlaying;
+        }
 
-          this.classList.toggle("active");
+        if (playPauseButton) {
+          playPauseButton.addEventListener("click", togglePlayPause);
+        }
 
-          // Close other open cards (optional - comment out if you want multiple open)
-          document.querySelectorAll(".swiper-slide").forEach((otherCard) => {
-            if (otherCard !== this && otherCard.classList.contains("active")) {
-              otherCard.classList.remove("active");
+        if (audio) {
+          audio.addEventListener("ended", function () {
+            audio.currentTime = 0;
+            audio.play();
+          });
+        }
+
+        // Initialize Swiper with Horizontal Scroll
+        if (typeof Swiper !== "undefined") {
+          const swiper = new Swiper(".swiper", {
+            direction: "horizontal",
+            loop: false,
+            speed: 600,
+            slidesPerView: "auto",
+            centeredSlides: true,
+            spaceBetween: 20,
+            grabCursor: true,
+            keyboard: {
+              enabled: true,
+            },
+            mousewheel: {
+              forceToAxis: true,
+            },
+            navigation: {
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+            },
+            pagination: {
+              el: ".swiper-pagination",
+              clickable: true,
+            },
+            breakpoints: {
+              320: {
+                slidesPerView: 1,
+                spaceBetween: 10,
+              },
+              768: {
+                slidesPerView: "auto",
+                spaceBetween: 20,
+              },
+            },
+          });
+
+          // Card click functionality
+          document.querySelectorAll(".swiper-slide").forEach((card) => {
+            card.addEventListener("click", function (e) {
+              // Prevent triggering when clicking on navigation buttons
+              if (
+                e.target.closest(".swiper-button-next") ||
+                e.target.closest(".swiper-button-prev") ||
+                e.target.closest(".swiper-pagination")
+              ) {
+                return;
+              }
+
+              this.classList.toggle("active");
+
+              // Close other open cards (optional - comment out if you want multiple open)
+              document
+                .querySelectorAll(".swiper-slide")
+                .forEach((otherCard) => {
+                  if (
+                    otherCard !== this &&
+                    otherCard.classList.contains("active")
+                  ) {
+                    otherCard.classList.remove("active");
+                  }
+                });
+            });
+          });
+
+          // Close card when clicking outside (optional)
+          document.addEventListener("click", function (e) {
+            if (
+              !e.target.closest(".swiper-slide") &&
+              !e.target.closest(".swiper-button-next") &&
+              !e.target.closest(".swiper-button-prev")
+            ) {
+              document.querySelectorAll(".swiper-slide").forEach((card) => {
+                card.classList.remove("active");
+              });
             }
           });
-        });
-      });
 
-      // Close card when clicking outside (optional)
-      document.addEventListener("click", function (e) {
-        if (
-          !e.target.closest(".swiper-slide") &&
-          !e.target.closest(".swiper-button-next") &&
-          !e.target.closest(".swiper-button-prev")
-        ) {
-          document.querySelectorAll(".swiper-slide").forEach((card) => {
-            card.classList.remove("active");
+          // Add keyboard navigation
+          document.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowLeft") {
+              swiper.slidePrev();
+            } else if (e.key === "ArrowRight") {
+              swiper.slideNext();
+            } else if (e.key === "Escape") {
+              // Close all open cards with Escape key
+              document.querySelectorAll(".swiper-slide").forEach((card) => {
+                card.classList.remove("active");
+              });
+            }
           });
         }
-      });
 
-      // Particles.js - Minimal and Sophisticated
-      particlesJS("particles-js", {
-        particles: {
-          number: { value: 60, density: { enable: true, value_area: 800 } },
-          color: { value: "#0FF0FC" },
-          shape: { type: "circle" },
-          opacity: { value: 0.05, random: true },
-          size: { value: 2, random: true },
-          line_linked: { enable: false },
-          move: {
-            enable: true,
-            speed: 0.2,
-            direction: "none",
-            random: true,
-            straight: false,
-            out_mode: "out",
-            bounce: false,
-          },
-        },
-        interactivity: {
-          detect_on: "canvas",
-          events: {
-            onhover: { enable: true, mode: "repulse" },
-            onclick: { enable: false },
-          },
-        },
-        retina_detect: true,
-      });
+        // Initialize particles if available
+        if (typeof particlesJS !== "undefined") {
+          particlesJS("particles-js", {
+            particles: {
+              number: { value: 60, density: { enable: true, value_area: 800 } },
+              color: { value: "#0FF0FC" },
+              shape: { type: "circle" },
+              opacity: { value: 0.05, random: true },
+              size: { value: 2, random: true },
+              line_linked: { enable: false },
+              move: {
+                enable: true,
+                speed: 0.2,
+                direction: "none",
+                random: true,
+                straight: false,
+                out_mode: "out",
+                bounce: false,
+              },
+            },
+            interactivity: {
+              detect_on: "canvas",
+              events: {
+                onhover: { enable: true, mode: "repulse" },
+                onclick: { enable: false },
+              },
+            },
+            retina_detect: true,
+          });
+        }
 
-      // Status bar update
-      function updateStatus() {
-        const now = new Date();
-        const time = now.toLocaleTimeString("en-US", { hour12: false });
-        const date = now.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        });
-        document.querySelector(".status-right").innerHTML = `
-          <span>${time}</span>
-          <span>${date}</span>
-          <span style="color: var(--terminal-green)">● CLICK_CARDS</span>
-        `;
-      }
-
-      setInterval(updateStatus, 1000);
-      updateStatus();
-
-      // Auto-start music on interaction
-      document.addEventListener(
-        "click",
-        function initAudioAuto() {
-          if (!isPlaying) {
-            audio
-              .play()
-              .then(() => {
-                playIcon.classList.add("hidden");
-                pauseIcon.classList.remove("hidden");
-                isPlaying = true;
-              })
-              .catch((e) => console.log("Auto-play prevented"));
+        // Status bar update
+        function updateStatus() {
+          const now = new Date();
+          const time = now.toLocaleTimeString("en-US", { hour12: false });
+          const date = now.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          });
+          const statusRight = document.querySelector(".status-right");
+          if (statusRight) {
+            statusRight.innerHTML = `
+              <span>${time}</span>
+              <span>${date}</span>
+              <span style="color: var(--terminal-green)">● CLICK_CARDS</span>
+            `;
           }
-          document.removeEventListener("click", initAudioAuto);
-        },
-        { once: true }
-      );
-
-      // Add keyboard navigation
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "ArrowLeft") {
-          swiper.slidePrev();
-        } else if (e.key === "ArrowRight") {
-          swiper.slideNext();
-        } else if (e.key === "Escape") {
-          // Close all open cards with Escape key
-          document.querySelectorAll(".swiper-slide").forEach((card) => {
-            card.classList.remove("active");
-          });
         }
-      });
+
+        setInterval(updateStatus, 1000);
+        updateStatus();
+
+        // Auto-start music on interaction
+        document.addEventListener(
+          "click",
+          function initAudioAuto() {
+            if (audio && !isPlaying) {
+              audio
+                .play()
+                .then(() => {
+                  if (playIcon && pauseIcon) {
+                    playIcon.classList.add("hidden");
+                    pauseIcon.classList.remove("hidden");
+                  }
+                  isPlaying = true;
+                })
+                .catch((e) => console.log("Auto-play prevented"));
+            }
+            document.removeEventListener("click", initAudioAuto);
+          },
+          { once: true }
+        );
+      }
     </script>
   </body>
 </html>
