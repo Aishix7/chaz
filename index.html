@@ -325,9 +325,40 @@
         text-align: center;
         margin-top: 15px;
       }
+
+      /* SKIP BUTTON - Added this new style */
+      .skip-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(12, 12, 12, 0.9);
+        color: #ffd700;
+        border: 1px solid #ffd700;
+        padding: 10px 20px;
+        font-family: "Consolas", "Monaco", monospace;
+        font-size: 13px;
+        cursor: pointer;
+        z-index: 100;
+        transition: all 0.3s;
+        backdrop-filter: blur(5px);
+        border-radius: 3px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .skip-button:hover {
+        background: rgba(255, 215, 0, 0.1);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
+      }
     </style>
   </head>
   <body>
+    <!-- SKIP BUTTON - Added at the beginning -->
+    <button class="skip-button" id="skipButton" style="display: none">
+      ⏩ Skip to Options
+    </button>
+
     <div id="container">
       <!-- Stadium Canvas Background -->
       <div id="canvas-container">
@@ -1040,7 +1071,6 @@
         <div class="key-hint">(There's more waiting for you...)</div>
       `;
 
-          // Fixed: Add the missing goToNextPage method
           indicator.addEventListener("click", () => this.goToNextPage());
           continueLine.appendChild(indicator);
 
@@ -1059,14 +1089,22 @@
           );
         }
 
-        // ADD THIS MISSING METHOD!
         goToNextPage() {
           // Clear the terminal with a cool effect
           const terminal = document.getElementById("terminal");
           terminal.style.opacity = "0";
           terminal.style.transition = "opacity 0.5s";
 
-          // Show VR instruction message FIRST
+          // Show VR instruction message
+          this.showOptionsScreen();
+        }
+
+        showOptionsScreen() {
+          // Hide skip button
+          const skipButton = document.getElementById("skipButton");
+          if (skipButton) skipButton.style.display = "none";
+
+          // Show VR instruction message
           const vrInstructions = document.createElement("div");
           vrInstructions.style.cssText = `
         position: fixed;
@@ -1171,6 +1209,25 @@
                 (A special personal message just for you!)
               </div>
             </div>
+            <div style="margin-top: 25px;">
+              <button onclick="window.location.href='index.html'"
+                      style="
+                        background: transparent;
+                        color: #999;
+                        border: 1px solid #555;
+                        padding: 8px 20px;
+                        font-family: 'Consolas', monospace;
+                        font-size: 12px;
+                        border-radius: 3px;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                        margin-top: 10px;
+                      "
+                      onmouseover="this.style.background='rgba(255, 255, 255, 0.1)'"
+                      onmouseout="this.style.background='transparent'">
+                ↩ Back to Terminal Animation
+              </button>
+            </div>
             <div style="margin-top: 15px; color: #999; font-size: 12px;">
               <span style="color: #4af626;">↗</span> Will open in new tab
             </div>
@@ -1209,6 +1266,12 @@
         }
       }
 
+      // Global function to show options screen (can be called from anywhere)
+      window.goToNextPage = function () {
+        const terminal = new Terminal();
+        terminal.goToNextPage();
+      };
+
       // Initialize everything when page loads
       window.onload = function () {
         try {
@@ -1218,6 +1281,17 @@
           // Initialize terminal
           const terminal = new Terminal();
           terminal.start();
+
+          // Show skip button after 2 seconds
+          setTimeout(() => {
+            const skipButton = document.getElementById("skipButton");
+            if (skipButton) {
+              skipButton.style.display = "block";
+              skipButton.addEventListener("click", () => {
+                terminal.goToNextPage();
+              });
+            }
+          }, 2000);
 
           // Add interactivity to terminal buttons
           document.querySelectorAll(".terminal-button").forEach((button) => {
@@ -1263,6 +1337,11 @@
             <a href="personal-message.html" style="color: #ff6b8b; text-decoration: underline; font-size: 1.3rem; display: block; margin: 15px 0;">
               💌 Click here for Personal Message from Friend
             </a>
+          </div>
+          <div style="margin-top: 30px;">
+            <button onclick="window.goToNextPage()" style="background: #ffd700; color: #000; border: none; padding: 10px 20px; font-family: 'Consolas', monospace; cursor: pointer; border-radius: 3px;">
+              ⏩ Skip to Options Screen
+            </button>
           </div>
           <p style="color: #aaa; margin-top: 50px;">
             Made with ❤️ for Charith's 23rd birthday
