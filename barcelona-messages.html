@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FC Barcelona | Messages from The Team</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --barca-blue: #004d98;
+        --barca-dark-blue: #002d62;
+        --barca-maroon: #a50044;
+        --barca-dark-maroon: #8a002e;
+        --terminal-green: #00ff41;
+        --neon-blue: #0ff0fc;
+        --dark-bg: #0a0a0f;
+        --card-bg: rgba(10, 10, 15, 0.85);
+        --text-light: #f0f0f0;
+        --text-dim: #8a8a9c;
+        --accent-gold: #ffd700;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--dark-bg);
+        color: var(--text-light);
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      /* Minimal Particles Background */
+      .particles {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.3;
+      }
+
+      /* Main Container */
+      .main-container {
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 0 20px;
+        height: 130vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+      }
+
+      /* Header - Clean and Masculine */
+      .header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-top: 20px;
+      }
+
+      .club-badge {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: 900;
+        color: var(--barca-maroon);
+        text-shadow: 0 0 20px rgba(165, 0, 68, 0.5);
+      }
+
+      .main-title {
+        font-family: "Orbitron", sans-serif;
+        font-size: 2.5rem;
+        font-weight: 900;
+        background: linear-gradient(
+          135deg,
+          var(--barca-blue),
+          var(--neon-blue)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+      }
+
+      .subtitle {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1rem;
+        color: var(--text-dim);
+        font-weight: 400;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+      }
+
+      .terminal-line {
+        font-family: "Space Grotesk", monospace;
+        color: var(--terminal-green);
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+        display: inline-block;
+        padding: 6px 12px;
+        background: rgba(0, 77, 152, 0.1);
+        border-left: 3px solid var(--terminal-green);
+      }
+
+      /* Swiper Container - Professional Horizontal Scroll */
+      .swiper-container {
+        width: 100%;
+        height: 500px;
+        margin: 0 auto;
+        position: relative;
+      }
+
+      .swiper {
+        width: 100%;
+        height: 100%;
+        padding: 20px 0;
+      }
+
+      /* Player Cards - Clean & Masculine */
+      .swiper-slide {
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        height: 450px;
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+        margin: 0 10px;
+        cursor: pointer;
+      }
+
+      .swiper-slide:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        border-color: rgba(0, 255, 65, 0.2);
+      }
+
+      /* Active card styling */
+      .swiper-slide-active {
+        transform: scale(1.05);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        z-index: 10;
+      }
+
+      .player-image-container {
+        height: 450px;
+        overflow: hidden;
+        position: relative;
+        background: linear-gradient(135deg, var(--barca-dark-blue), #000);
+      }
+
+      .player-image-container::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to bottom,
+          transparent 60%,
+          rgba(10, 10, 15, 0.8) 90%,
+          rgba(10, 10, 15, 0.95) 100%
+        );
+        z-index: 1;
+      }
+
+      .player-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 20%;
+        transition: transform 0.5s ease;
+      }
+
+      .swiper-slide:hover .player-image {
+        transform: scale(1.05);
+      }
+
+      /* Player name overlay on image */
+      .player-name-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 25px 20px;
+        background: linear-gradient(
+          to top,
+          rgba(10, 10, 15, 0.95),
+          transparent
+        );
+        z-index: 2;
+        text-align: center;
+      }
+
+      .player-name-image {
+        font-family: "Orbitron", sans-serif;
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: white;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        margin-bottom: 8px;
+      }
+
+      .player-position-image {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 0.85rem;
+        color: var(--neon-blue);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+      }
+
+      .player-number {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: var(--barca-maroon);
+        color: white;
+        font-family: "Orbitron", sans-serif;
+        font-size: 1.3rem;
+        font-weight: 700;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 3;
+        box-shadow: 0 5px 15px rgba(165, 0, 68, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .club-logo {
+        height: 35vh;
+        padding-top: 35px;
+
+        width: 10vw;
+      }
+
+      /* Message View (hidden by default) */
+      .player-message-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--card-bg);
+        padding: 30px 25px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transform: translateY(100%);
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        opacity: 0;
+        z-index: 4;
+      }
+
+      .swiper-slide.active .player-message-container {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .player-name-message {
+        font-family: "Orbitron", sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+        text-align: center;
+        margin-bottom: 15px;
+        letter-spacing: 0.5px;
+      }
+
+      .player-message {
+        font-family: "Inter", sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+        color: var(--text-light);
+        text-align: center;
+        font-style: italic;
+        max-height: 200px;
+        overflow-y: auto;
+        padding: 0 10px;
+        width: 100%;
+      }
+
+      .player-message::before,
+      .player-message::after {
+        color: var(--barca-maroon);
+        font-size: 1.4rem;
+        font-weight: bold;
+      }
+
+      .player-message::before {
+        content: '"';
+      }
+
+      .player-message::after {
+        content: '"';
+      }
+
+      /* Message scrollbar */
+      .player-message::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      .player-message::-webkit-scrollbar-track {
+        background: rgba(0, 77, 152, 0.1);
+        border-radius: 2px;
+      }
+
+      .player-message::-webkit-scrollbar-thumb {
+        background: linear-gradient(
+          to bottom,
+          var(--barca-blue),
+          var(--neon-blue)
+        );
+        border-radius: 2px;
+      }
+
+      /* Click hint indicator */
+      .click-hint {
+        position: absolute;
+        bottom: 15px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-family: "Space Grotesk", monospace;
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.6);
+        letter-spacing: 1px;
+        z-index: 3;
+        background: rgba(10, 10, 15, 0.5);
+        padding: 5px;
+        backdrop-filter: blur(5px);
+        border-top: 1px solid rgba(0, 255, 65, 0.1);
+      }
+
+      .click-hint ion-icon {
+        vertical-align: middle;
+        margin-right: 5px;
+        color: var(--terminal-green);
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url(barca.jpg);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0.15;
+        z-index: -2;
+      }
+
+      /* Audio Controls - Minimal */
+      .audio-controls {
+        position: fixed;
+        bottom: 30px;
+        left: 30px;
+        z-index: 1000;
+      }
+
+      #play-pause-button {
+        background: rgba(10, 10, 15, 0.9);
+        border: 1px solid rgba(0, 255, 65, 0.3);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        color: var(--terminal-green);
+        font-size: 1.5rem;
+      }
+
+      #play-pause-button:hover {
+        background: rgba(0, 255, 65, 0.1);
+        transform: scale(1.05);
+        border-color: var(--terminal-green);
+      }
+
+      /* Navigation Buttons */
+      .navigation-section {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 20px;
+      }
+
+      .nav-btn {
+        background: transparent;
+        border: 1px solid var(--barca-blue);
+        color: var(--text-light);
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 0.9rem;
+        padding: 12px 30px;
+        margin: 0 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(0, 77, 152, 0.3),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      .nav-btn:hover::before {
+        left: 100%;
+      }
+
+      .nav-btn:hover {
+        background: rgba(0, 77, 152, 0.1);
+        border-color: var(--neon-blue);
+        transform: translateY(-2px);
+      }
+
+      .back-button {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: rgba(10, 10, 15, 0.9);
+        border: 1px solid var(--barca-maroon);
+        color: white;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 0.85rem;
+        padding: 10px 20px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .back-button:hover {
+        background: rgba(165, 0, 68, 0.1);
+        border-color: var(--terminal-green);
+        transform: translateY(-2px);
+      }
+
+      /* Status Bar */
+      .status-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(10, 10, 15, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+        padding: 10px 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+        font-family: "Space Grotesk", monospace;
+        font-size: 0.85rem;
+      }
+
+      .status-left {
+        color: var(--terminal-green);
+        letter-spacing: 1px;
+      }
+
+      .status-right {
+        color: var(--text-dim);
+        display: flex;
+        gap: 15px;
+      }
+
+      /* Swiper Navigation Customization */
+      .swiper-button-next,
+      .swiper-button-prev {
+        color: var(--terminal-green) !important;
+        background: rgba(10, 10, 15, 0.7);
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 50%;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(0, 255, 65, 0.2);
+      }
+
+      .swiper-button-next:after,
+      .swiper-button-prev:after {
+        font-size: 1.2rem !important;
+        font-weight: bold;
+      }
+
+      .swiper-button-next:hover,
+      .swiper-button-prev:hover {
+        background: rgba(0, 255, 65, 0.1);
+        transform: scale(1.1);
+      }
+
+      /* Pagination */
+      .swiper-pagination-bullet {
+        background: var(--text-dim) !important;
+        opacity: 0.5 !important;
+        width: 8px !important;
+        height: 8px !important;
+      }
+
+      .swiper-pagination-bullet-active {
+        background: var(--terminal-green) !important;
+        opacity: 1 !important;
+        transform: scale(1.2);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .main-title {
+          font-size: 2rem;
+        }
+
+        .swiper-container {
+          height: 450px;
+        }
+
+        .swiper-slide {
+          height: 400px;
+          width: 280px;
+        }
+
+        .player-image-container {
+          height: 400px;
+        }
+
+        .player-name-image {
+          font-size: 1.4rem;
+        }
+
+        .player-name-message {
+          font-size: 1.3rem;
+        }
+
+        .player-message {
+          font-size: 0.9rem;
+        }
+      }
+
+      /* Utility */
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <audio id="background-music" loop>
+      <source src="Cant del Barça.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <div class="status-left">FC_BARCELONA://MESSAGES_FROM_TEAM</div>
+      <div class="status-right">
+        <span>CLICK_CARDS_TOGGLE</span>
+        <span>CARDS: 9</span>
+        <span class="terminal-green">ACTIVE</span>
+      </div>
+    </div>
+
+    <!-- Particles Background -->
+    <div id="particles-js" class="particles"></div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+      <!-- Header -->
+      <header class="header">
+        <div class="club-logo-container">
+          <img src="fcb.png" alt="FC Barcelona Logo" class="club-logo" />
+        </div>
+        <h1 class="main-title">MESSAGES FROM THE TEAM</h1>
+        <p class="subtitle">FC Barcelona Players Extend Their Wishes</p>
+        <div class="terminal-line">
+          <span class="terminal-green">></span> Click cards to reveal messages
+        </div>
+      </header>
+
+      <!-- Swiper Container for Horizontal Scroll -->
+      <div class="swiper-container">
+        <div class="swiper">
+          <div class="swiper-wrapper">
+            <!-- Lamine Yamal -->
+            <div class="swiper-slide">
+              <div class="player-image-container">
+                <img
+                  src="lamine-yamal.jpg"
+                  alt="Lamine Yamal"
+                  class="player-image"
+                />
+                <div class="player-number">27</div>
+                <div class="player-name-overlay">
+                  <h2 class="player-name-image">LAMINE YAMAL</h2>
+                  <div class="player-position-image">Forward | Winger</div>
+                </div>
+                <!-- <div class="click-hint">
+                  <ion-icon name="expand"></ion-icon> Click to view message
+                </div> -->
+              </div>
+              <div class="player-message-container">
+                <h2 class="player-name-message">LAMINE YAMAL</h2>
+                <p class="player-message">
+                  Charith, at 17 they say I'm too young to understand pressure.
+                  At 23, they say you should have it all figured out. Both are
+                  wrong. Pressure is just life asking if you're ready to play.
+                  We're all on the pitch together—some games we win, some we
+                  learn. Today, we celebrate you.
+                </p>
+                <div
+                  class="click-hint"
+                  style="position: relative; bottom: auto; margin-top: 20px"
+                >
+                  <!-- <ion-icon name="contract"></ion-icon> Click to view player -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Raphinha -->
+            <div class="swiper-slide">
+              <div class="player-image-container">
+                <img src="raphina.jpg" alt="Raphinha" class="player-image" />
+                <div class="player-number">11</div>
+                <div class="player-name-overlay">
+                  <h2 class="player-name-image">RAPHINHA</h2>
+                  <div class="player-position-image">
+                    Forward | Right Winger
+                  </div>
+                </div>
+                <!-- <div class="click-hint">
+                  <ion-icon name="expand"></ion-icon> Click to view message
+                </div> -->
+              </div>
+              <div class="player-message-container">
+                <h2 class="player-name-message">RAPHINHA</h2>
+                <p class="player-message">
+                  Life, like football, has its rainy nights. But in Barcelona,
+                  we play through the rain. We slip, we fall, we get muddy—but
+                  we keep dancing. Today is your sunny day, Charith. Dance.
+                  Tomorrow, if it rains, remember: we play better in the rain.
+                </p>
+                <div
+                  class="click-hint"
+                  style="position: relative; bottom: auto; margin-top: 20px"
+                >
+                  <!-- <ion-icon name="contract"></ion-icon> Click to view player -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Lewandowski -->
+            <div class="swiper-slide">
+              <div class="player-image-container">
+                <img
+                  src="lewandowski.jpg"
+                  alt="lewandowski"
+                  class="player-image"
+                />
+                <div class="player-number">9</div>
+                <div class="player-name-overlay">
+                  <h2 class="player-name-image">ROBERT LEWANDOWSKI</h2>
+                  <div class="player-position-image">
+                    Striker | Center Forward
+                  </div>
+                </div>
+                <!-- <div class="click-hint">
+                  <ion-icon name="expand"></ion-icon> Click to view message
+                </div> -->
+              </div>
+              <div class="player-message-container">
+                <h2 class="player-name-message">ROBERT LEWANDOWSKI</h2>
+                <p class="player-message">
+                  Twenty-three. Old enough to know the work required, young
+                  enough to still dream bigger. I see you in the stands—through
+                  our wins, our draws, our rebuilding. That's loyalty. Today,
+                  your team returns that loyalty. We're in your corner, always.
+                </p>
+                <div
+                  class="click-hint"
+                  style="position: relative; bottom: auto; margin-top: 20px"
+                >
+                  <!-- <ion-icon name="contract"></ion-icon> Click to view player -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Pedri -->
+            <div class="swiper-slide">
+              <div class="player-image-container">
+                <img src="pedri.jpg" alt="pedri" class="player-image" />
+                <div class="player-number">8</div>
+                <div class="player-name-overlay">
+                  <h2 class="player-name-image">PEDRI</h2>
+                  <div class="player-position-image">
+                    Midfielder | Playmaker
+                  </div>
+                </div>
+                <!-- <div class="click-hint">
+                  <ion-icon name="expand"></ion-icon> Click to view message
+                </div> -->
+              </div>
+              <div class="player-message-container">
+                <h2 class="player-name-message">PEDRI</h2>
+                <p class="player-message">
+                  Sometimes the game gets chaotic. Twenty-two players running,
+                  shouting, pushing. That's when you find the quiet pass. That's
+                  when you create. Life gets chaotic at 23. Find your quiet
+                  pass, Charith. Create your space
+                </p>
+                <div
+                  class="click-hint"
+                  style="position: relative; bottom: auto; margin-top: 20px"
+                >
+                  <!-- <ion-icon name="contract"></ion-icon> Click to view player -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Gavi -->
+            <div class="swiper-slide">
+              <div class="player-image-container">
+                <img src="gavi.jpg" alt="gavi" class="player-image" />
+                <div class="player-number">6</div>
+                <div class="player-name-overlay">
+                  <h2 class="player-name-image">GAVI</h2>
+                  <div class="player-position-image">Midfielder | Central</div>
+                </div>
+                <!-- <div class="click-hint">
+                  <ion-icon name="expand"></ion-icon> Click to view message
+                </div> -->
+              </div>
+              <div class="player-message-container">
+                <h2 class="player-name-message">GAVI</h2>
+                <p class="player-message">
+                  I play like every game could be my last. You're living like 23
+                  is just the beginning. Both are true. Fight for today like
+                  it's everything. Dream of tomorrow like it's everything too.
+                  We're fighting alongside you.
+                </p>
+                <div
+                  class="click-hint"
+                  style="position: relative; bottom: auto; margin-top: 20px"
+                >
+                  <!-- <ion-icon name="contract"></ion-icon> Click to view player -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Fermín López -->
+            <div class="swiper-slide">
+              <div class="player-image-container">
+                <img src="fermin-lopez.jpg" alt="Fermín" class="player-image" />
+                <div class="player-number">16</div>
+                <div class="player-name-overlay">
+                  <h2 class="player-name-image">FERMÍN LÓPEZ</h2>
+                  <div class="player-position-image">
+                    Midfielder | Attacking
+                  </div>
+                </div>
+                <!-- <div class="click-hint">
+                  <ion-icon name="expand"></ion-icon> Click to view message
+                </div> -->
+              </div>
+              <div class="player-message-container">
+                <h2 class="player-name-message">FERMÍN LÓPEZ</h2>
+                <p class="player-message">
+                  They said I'd never stand here in this shirt. You've had
+                  moments they said you'd never overcome. Look at us now. Still
+                  standing. Still fighting. Still wearing our colors with pride.
+                  Some victories are quiet. Today, let's be loud.
+                </p>
+                <div
+                  class="click-hint"
+                  style="position: relative; bottom: auto; margin-top: 20px"
+                >
+                  <!-- <ion-icon name="contract"></ion-icon> Click to view player -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Ferran Torres -->
+            <div class="swiper-slide">
+              <div class="player-image-container">
+                <img
+                  src="ferran torres.jpg"
+                  alt="ferran"
+                  class="player-image"
+                />
+                <div class="player-number">7</div>
+                <div class="player-name-overlay">
+                  <h2 class="player-name-image">FERRAN TORRES</h2>
+                  <div class="player-position-image">Forward | Attacker</div>
+                </div>
+                <!-- <div class="click-hint">
+                  <ion-icon name="expand"></ion-icon> Click to view message
+                </div> -->
+              </div>
+              <div class="player-message-container">
+                <h2 class="player-name-message">FERRAN TORRES</h2>
+                <p class="player-message">
+                  I've missed chances in front of 90,000 people. You've faced
+                  moments that felt just as public. Here's what matters: the
+                  next shot. The next day. The next try. We don't stop. We
+                  reload. Happy Birthday, reload.
+                </p>
+                <div
+                  class="click-hint"
+                  style="position: relative; bottom: auto; margin-top: 20px"
+                >
+                  <!-- <ion-icon name="contract"></ion-icon> Click to view player -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Frenkie de Jong -->
+            <div class="swiper-slide">
+              <div class="player-image-container">
+                <img
+                  src="frenkie de jong.jpg"
+                  alt="frenkie"
+                  class="player-image"
+                />
+                <div class="player-number">21</div>
+                <div class="player-name-overlay">
+                  <h2 class="player-name-image">FRENKIE DE JONG</h2>
+                  <div class="player-position-image">
+                    Midfielder | Controller
+                  </div>
+                </div>
+                <!-- <div class="click-hint">
+                  <ion-icon name="expand"></ion-icon> Click to view message
+                </div> -->
+              </div>
+              <div class="player-message-container">
+                <h2 class="player-name-message">FRENKIE DE JONG</h2>
+                <p class="player-message">
+                  When the press is high and the space is tight, that's when you
+                  prove your quality. Twenty-three can feel like that—everyone
+                  expecting, watching, waiting. Control what you can. Trust your
+                  touch. We trust you.
+                </p>
+                <div
+                  class="click-hint"
+                  style="position: relative; bottom: auto; margin-top: 20px"
+                >
+                  <!-- <ion-icon name="contract"></ion-icon> Click to view player -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Dani Olmo -->
+            <div class="swiper-slide">
+              <div class="player-image-container">
+                <img src="dani olmo.jpg" alt="dani" class="player-image" />
+                <div class="player-number">19</div>
+                <div class="player-name-overlay">
+                  <h2 class="player-name-image">DANI OLMO</h2>
+                  <div class="player-position-image">
+                    Midfielder | Attacking
+                  </div>
+                </div>
+                <!-- <div class="click-hint">
+                  <ion-icon name="expand"></ion-icon> Click to view message
+                </div> -->
+              </div>
+              <div class="player-message-container">
+                <h2 class="player-name-message">DANI OLMO</h2>
+                <p class="player-message">
+                  Twenty-three. Not a boy, not yet the man they expect. Perfect.
+                  That's where the best football is played—in between. In the
+                  spaces no one's watching yet. Find your space, Charith. We're
+                  watching, and we're proud
+                </p>
+                <div
+                  class="click-hint"
+                  style="position: relative; bottom: auto; margin-top: 20px"
+                >
+                  <!-- <ion-icon name="contract"></ion-icon> Click to view player -->
+                </div>
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="player-image-container">
+                <img src="fcb.jpg" alt="fcb" class="player-image" />
+                <div class="player-number">28!</div>
+                <div class="player-name-overlay">
+                  <h2 class="player-name-image">FCB</h2>
+                  <div class="player-position-image">Charith's Team</div>
+                </div>
+                <!-- <div class="click-hint">
+                  <ion-icon name="expand"></ion-icon> Click to view message
+                </div> -->
+              </div>
+              <div class="player-message-container">
+                <h2 class="player-name-message">FC Barcelona</h2>
+                <p class="player-message">
+                  Charith, For over a century, this club has stood for more than
+                  football. It's stood for community. For belonging. For knowing
+                  that no matter what jersey life puts you in, there's always a
+                  family in Barcelona wearing yours. You've celebrated with us
+                  in our triumphs. You've stood with us in our rebuilds. Today,
+                  the entire club stands with you. At 23, you stand at that
+                  beautiful intersection—old enough to carry wisdom, young
+                  enough to still chase wonder. Guard both fiercely. Remember:
+                  the greatest victories aren't just the trophies lifted in May.
+                  They're the quiet resilience in November. The faith kept in
+                  March. The joy found in every single matchday, regardless of
+                  the result. That's the Barça way. That's your way. Today we
+                  celebrate you, Charith. Tomorrow, and every day after, we play
+                  for you. Because that's what family does—we show up for each
+                  other, through every season, every challenge, every victory.
+                  With you, always. Visca Barça, Visca Charith..
+                </p>
+                <div
+                  class="click-hint"
+                  style="position: relative; bottom: auto; margin-top: 20px"
+                >
+                  <!-- <ion-icon name="contract"></ion-icon> Click to view player -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Swiper Navigation -->
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
+          <!-- <div class="swiper-pagination"></div> -->
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="navigation-section">
+        <button class="nav-btn" onclick="window.location.href='index.html'">
+          <ion-icon name="arrow-back" style="vertical-align: middle"></ion-icon>
+          Back to Terminal
+        </button>
+        <button
+          class="nav-btn"
+          onclick="window.open('https://www.360cities.net/image/camp-nou-stadium/vr', '_blank')"
+        >
+          <ion-icon name="vr-card" style="vertical-align: middle"></ion-icon>
+          Explore Camp Nou VR
+        </button>
+      </div>
+    </div>
+
+    <!-- Audio Controls -->
+    <div class="audio-controls">
+      <button id="play-pause-button">
+        <ion-icon class="audio-icon" id="play-music" name="play"></ion-icon>
+        <ion-icon
+          class="audio-icon hidden"
+          id="pause-music"
+          name="pause"
+        ></ion-icon>
+      </button>
+    </div>
+
+    <!-- Back Button
+    <a href="javascript:history.back()" class="back-button">
+      <ion-icon name="return-up-back"></ion-icon>
+      Previous
+    </a> -->
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+      "use strict";
+
+      // Audio Control
+      const audio = document.getElementById("background-music");
+      const playPauseButton = document.getElementById("play-pause-button");
+      const playIcon = document.getElementById("play-music");
+      const pauseIcon = document.getElementById("pause-music");
+      let isPlaying = false;
+
+      function togglePlayPause() {
+        if (isPlaying) {
+          audio.pause();
+          playIcon.classList.remove("hidden");
+          pauseIcon.classList.add("hidden");
+        } else {
+          audio.play().catch((e) => {
+            console.log("Audio play failed:", e);
+            // Auto-play on user interaction
+            document.addEventListener(
+              "click",
+              function initAudio() {
+                audio.play();
+                playIcon.classList.add("hidden");
+                pauseIcon.classList.remove("hidden");
+                isPlaying = true;
+                document.removeEventListener("click", initAudio);
+              },
+              { once: true }
+            );
+          });
+          playIcon.classList.add("hidden");
+          pauseIcon.classList.remove("hidden");
+        }
+        isPlaying = !isPlaying;
+      }
+
+      playPauseButton.addEventListener("click", togglePlayPause);
+
+      audio.addEventListener("ended", function () {
+        audio.currentTime = 0;
+        audio.play();
+      });
+
+      // Initialize Swiper with Horizontal Scroll
+      const swiper = new Swiper(".swiper", {
+        direction: "horizontal",
+        loop: false,
+        speed: 600,
+        slidesPerView: "auto",
+        centeredSlides: true,
+        spaceBetween: 20,
+        grabCursor: true,
+        keyboard: {
+          enabled: true,
+        },
+        mousewheel: {
+          forceToAxis: true,
+        },
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+        pagination: {
+          el: ".swiper-pagination",
+          clickable: true,
+        },
+        breakpoints: {
+          320: {
+            slidesPerView: 1,
+            spaceBetween: 10,
+          },
+          768: {
+            slidesPerView: "auto",
+            spaceBetween: 20,
+          },
+        },
+      });
+
+      // Card click functionality
+      document.querySelectorAll(".swiper-slide").forEach((card) => {
+        card.addEventListener("click", function (e) {
+          // Prevent triggering when clicking on navigation buttons
+          if (
+            e.target.closest(".swiper-button-next") ||
+            e.target.closest(".swiper-button-prev") ||
+            e.target.closest(".swiper-pagination")
+          ) {
+            return;
+          }
+
+          this.classList.toggle("active");
+
+          // Close other open cards (optional - comment out if you want multiple open)
+          document.querySelectorAll(".swiper-slide").forEach((otherCard) => {
+            if (otherCard !== this && otherCard.classList.contains("active")) {
+              otherCard.classList.remove("active");
+            }
+          });
+        });
+      });
+
+      // Close card when clicking outside (optional)
+      document.addEventListener("click", function (e) {
+        if (
+          !e.target.closest(".swiper-slide") &&
+          !e.target.closest(".swiper-button-next") &&
+          !e.target.closest(".swiper-button-prev")
+        ) {
+          document.querySelectorAll(".swiper-slide").forEach((card) => {
+            card.classList.remove("active");
+          });
+        }
+      });
+
+      // Particles.js - Minimal and Sophisticated
+      particlesJS("particles-js", {
+        particles: {
+          number: { value: 60, density: { enable: true, value_area: 800 } },
+          color: { value: "#0FF0FC" },
+          shape: { type: "circle" },
+          opacity: { value: 0.05, random: true },
+          size: { value: 2, random: true },
+          line_linked: { enable: false },
+          move: {
+            enable: true,
+            speed: 0.2,
+            direction: "none",
+            random: true,
+            straight: false,
+            out_mode: "out",
+            bounce: false,
+          },
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: true, mode: "repulse" },
+            onclick: { enable: false },
+          },
+        },
+        retina_detect: true,
+      });
+
+      // Status bar update
+      function updateStatus() {
+        const now = new Date();
+        const time = now.toLocaleTimeString("en-US", { hour12: false });
+        const date = now.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+        document.querySelector(".status-right").innerHTML = `
+          <span>${time}</span>
+          <span>${date}</span>
+          <span style="color: var(--terminal-green)">● CLICK_CARDS</span>
+        `;
+      }
+
+      setInterval(updateStatus, 1000);
+      updateStatus();
+
+      // Auto-start music on interaction
+      document.addEventListener(
+        "click",
+        function initAudioAuto() {
+          if (!isPlaying) {
+            audio
+              .play()
+              .then(() => {
+                playIcon.classList.add("hidden");
+                pauseIcon.classList.remove("hidden");
+                isPlaying = true;
+              })
+              .catch((e) => console.log("Auto-play prevented"));
+          }
+          document.removeEventListener("click", initAudioAuto);
+        },
+        { once: true }
+      );
+
+      // Add keyboard navigation
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft") {
+          swiper.slidePrev();
+        } else if (e.key === "ArrowRight") {
+          swiper.slideNext();
+        } else if (e.key === "Escape") {
+          // Close all open cards with Escape key
+          document.querySelectorAll(".swiper-slide").forEach((card) => {
+            card.classList.remove("active");
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

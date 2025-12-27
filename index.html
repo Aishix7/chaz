@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Professional Terminal with Camp Nou</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Consolas", "Monaco", "Lucida Console", monospace;
+        background: #000;
+        overflow: hidden;
+        height: 100vh;
+      }
+
+      #container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      #terminal {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80%;
+        max-width: 900px;
+        height: 70%;
+        background: rgba(12, 12, 12, 0.95);
+        border: 1px solid #555;
+        border-radius: 3px;
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.9);
+        z-index: 10;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .terminal-header {
+        background: linear-gradient(to bottom, #3c3c3c, #2a2a2a);
+        padding: 8px 12px;
+        border-bottom: 1px solid #555;
+        display: flex;
+        align-items: center;
+      }
+
+      .terminal-title {
+        color: #ccc;
+        font-size: 13px;
+        font-weight: normal;
+        margin-left: 10px;
+      }
+
+      .terminal-buttons {
+        display: flex;
+        gap: 6px;
+      }
+
+      .terminal-button {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+      }
+
+      .close {
+        background: #ff5f57;
+      }
+      .minimize {
+        background: #ffbd2e;
+      }
+      .maximize {
+        background: #28ca42;
+      }
+
+      .terminal-body {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        color: #ccc;
+        font-size: 14px;
+        line-height: 1.4;
+        background: rgba(0, 0, 0, 0.7);
+      }
+
+      .terminal-line {
+        margin-bottom: 8px;
+        white-space: nowrap; /* Prevent wrapping for command lines */
+        text-align: left; /* ALL LINES CENTERED BY DEFAULT */
+        overflow-x: auto; /* Allow horizontal scrolling if needed */
+      }
+
+      /* Allow wrapping ONLY for birthday messages */
+      .birthday-text {
+        white-space: normal !important;
+        text-align: left !important;
+        word-wrap: break-word;
+      }
+
+      /* Special handling for birthday banners */
+      .birthday-banner {
+        white-space: normal !important;
+        text-align: center !important;
+        font-weight: bold;
+        margin: 5px 0;
+      }
+
+      .prompt {
+        color: #4af626;
+        font-weight: bold;
+        white-space: nowrap;
+      }
+
+      .command {
+        color: #ddd;
+        white-space: nowrap;
+      }
+
+      .path {
+        color: #4d78cc;
+        white-space: nowrap;
+      }
+
+      .system {
+        color: #999;
+        white-space: nowrap;
+      }
+
+      /* Birthday system messages should wrap */
+      .birthday-text .system {
+        white-space: normal;
+      }
+
+      .error {
+        color: #ff5555;
+        white-space: nowrap;
+      }
+
+      .message {
+        color: #4af626;
+        font-weight: bold;
+        white-space: normal; /* Allow birthday messages to wrap */
+      }
+
+      .cursor {
+        display: inline-block;
+        width: 8px;
+        height: 16px;
+        background-color: #4af626;
+        animation: blink 1s infinite;
+        vertical-align: text-bottom;
+      }
+
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+
+      .typing {
+        display: inline-block;
+        overflow: hidden;
+        white-space: nowrap;
+        border-right: 2px solid transparent;
+      }
+
+      #canvas-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      /* Stadium canvas overlay */
+      #stadium-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        filter: brightness(0.8) contrast(1.1);
+      }
+
+      /* Scrollbar styling */
+      .terminal-body::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      .terminal-body::-webkit-scrollbar-track {
+        background: #1a1a1a;
+      }
+
+      .terminal-body::-webkit-scrollbar-thumb {
+        background: #444;
+        border-radius: 5px;
+      }
+
+      .terminal-body::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+
+      /* Status bar */
+      .status-bar {
+        background: #1a1a1a;
+        padding: 4px 12px;
+        border-top: 1px solid #555;
+        color: #888;
+        font-size: 12px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      /* Camp Nou title in background */
+      .stadium-title {
+        position: absolute;
+        bottom: 30px;
+        right: 30px;
+        color: rgba(255, 255, 255, 0.2);
+        font-size: 48px;
+        font-family: "Arial Black", sans-serif;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      .stadium-subtitle {
+        position: absolute;
+        bottom: 15px;
+        right: 30px;
+        color: rgba(255, 255, 255, 0.15);
+        font-size: 18px;
+        font-family: "Arial", sans-serif;
+        letter-spacing: 2px;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      /* Light effects */
+      .stadium-lights {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+            circle at 70% 30%,
+            rgba(26, 61, 143, 0.1),
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 30% 70%,
+            rgba(167, 29, 49, 0.1),
+            transparent 50%
+          );
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      /* Next page indicator */
+      .next-indicator {
+        color: #ffd700;
+        font-style: italic;
+        animation: pulse 2s infinite;
+        text-align: center;
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px dashed #ffd700;
+        border-radius: 5px;
+        background: rgba(255, 215, 0, 0.1);
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .next-indicator:hover {
+        background: rgba(255, 215, 0, 0.2);
+        transform: scale(1.02);
+      }
+
+      .next-indicator:active {
+        transform: scale(0.98);
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 0.7;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      .key-hint {
+        font-size: 11px;
+        color: #aaa;
+        margin-top: 5px;
+      }
+
+      /* Interactive cursor */
+      .interactive-cursor {
+        display: inline-block;
+        width: 12px;
+        height: 18px;
+        background-color: #ffd700;
+        animation: blink 0.8s infinite;
+        vertical-align: text-bottom;
+        margin-left: 5px;
+      }
+
+      .continue-line {
+        text-align: center;
+        margin-top: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <!-- Stadium Canvas Background -->
+      <div id="canvas-container">
+        <canvas id="stadium-canvas"></canvas>
+        <div class="stadium-lights"></div>
+        <div class="stadium-title">CAMP NOU</div>
+        <div class="stadium-subtitle">FC BARCELONA</div>
+      </div>
+
+      <!-- Terminal Window -->
+      <div id="terminal">
+        <div class="terminal-header">
+          <div class="terminal-buttons">
+            <button class="terminal-button close"></button>
+            <button class="terminal-button minimize"></button>
+            <button class="terminal-button maximize"></button>
+          </div>
+          <div class="terminal-title">Windows PowerShell</div>
+        </div>
+        <div class="terminal-body" id="terminal-content">
+          <!-- Terminal content will be inserted here -->
+        </div>
+        <div class="status-bar">
+          <span>Admin: Windows PowerShell</span>
+          <span>UTF-8</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Create Camp Nou stadium visualization using Canvas 2D API
+      // This will be more recognizable than the abstract Three.js version
+
+      class StadiumBackground {
+        constructor() {
+          this.canvas = document.getElementById("stadium-canvas");
+          this.ctx = this.canvas.getContext("2d");
+          this.width = window.innerWidth;
+          this.height = window.innerHeight;
+          this.canvas.width = this.width;
+          this.canvas.height = this.height;
+
+          // Camp Nou colors (Barcelona colors)
+          this.colors = {
+            blue: "#1a3d8f",
+            darkBlue: "#0d2b66",
+            maroon: "#a71d31",
+            darkMaroon: "#8a1729",
+            grass: "#228B22",
+            darkGrass: "#1a6b1a",
+            seats: "#2a2a2a",
+            lights: "#ffeb3b",
+          };
+
+          // Stadium dimensions
+          this.stadium = {
+            width: this.width,
+            height: this.height,
+            centerX: this.width / 2,
+            centerY: this.height / 2,
+            pitchWidth: this.width * 0.6,
+            pitchHeight: this.height * 0.4,
+            standsHeight: this.height * 0.3,
+          };
+
+          // Animation variables
+          this.time = 0;
+          this.crowdAnimation = 0;
+          this.lightIntensity = 1;
+
+          // Initialize
+          this.init();
+          this.animate();
+
+          // Handle resize
+          window.addEventListener("resize", () => this.onResize());
+        }
+
+        init() {
+          // Set canvas size
+          this.onResize();
+
+          // Draw initial stadium
+          this.drawStadium();
+        }
+
+        onResize() {
+          this.width = window.innerWidth;
+          this.height = window.innerHeight;
+          this.canvas.width = this.width;
+          this.canvas.height = this.height;
+
+          // Update stadium dimensions
+          this.stadium.width = this.width;
+          this.stadium.height = this.height;
+          this.stadium.centerX = this.width / 2;
+          this.stadium.centerY = this.height / 2;
+          this.stadium.pitchWidth = this.width * 0.6;
+          this.stadium.pitchHeight = this.height * 0.4;
+          this.stadium.standsHeight = this.height * 0.3;
+        }
+
+        drawStadium() {
+          const ctx = this.ctx;
+          const s = this.stadium;
+
+          // Clear canvas
+          ctx.clearRect(0, 0, this.width, this.height);
+
+          // Draw sky gradient
+          const skyGradient = ctx.createLinearGradient(0, 0, 0, s.height * 0.7);
+          skyGradient.addColorStop(0, "#0a1931");
+          skyGradient.addColorStop(1, "#1a3d8f");
+          ctx.fillStyle = skyGradient;
+          ctx.fillRect(0, 0, this.width, this.height);
+
+          // Draw distant stands (top tier)
+          this.drawTier(0.15, 0.8, this.colors.darkBlue);
+
+          // Draw middle tier
+          this.drawTier(0.25, 0.85, this.colors.blue);
+
+          // Draw lower tier
+          this.drawTier(0.35, 0.9, this.colors.maroon);
+
+          // Draw pitch
+          this.drawPitch();
+
+          // Draw seating patterns
+          this.drawSeating();
+
+          // Draw stadium lights
+          this.drawLights();
+
+          // Draw crowd
+          this.drawCrowd();
+
+          // Draw pitch markings
+          this.drawPitchMarkings();
+
+          // Draw scoreboard
+          this.drawScoreboard();
+        }
+
+        drawTier(opacity, heightFactor, color) {
+          const ctx = this.ctx;
+          const s = this.stadium;
+
+          ctx.save();
+          ctx.globalAlpha = opacity;
+
+          // Left stand
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.moveTo(0, s.height);
+          ctx.lineTo(0, s.height * heightFactor);
+          ctx.lineTo(s.width * 0.2, s.height * (heightFactor - 0.1));
+          ctx.lineTo(s.width * 0.2, s.height);
+          ctx.fill();
+
+          // Right stand
+          ctx.beginPath();
+          ctx.moveTo(s.width, s.height);
+          ctx.lineTo(s.width, s.height * heightFactor);
+          ctx.lineTo(s.width * 0.8, s.height * (heightFactor - 0.1));
+          ctx.lineTo(s.width * 0.8, s.height);
+          ctx.fill();
+
+          // Bottom stand
+          ctx.beginPath();
+          ctx.moveTo(s.width * 0.2, s.height);
+          ctx.lineTo(s.width * 0.2, s.height * (heightFactor - 0.1));
+          ctx.lineTo(s.width * 0.8, s.height * (heightFactor - 0.1));
+          ctx.lineTo(s.width * 0.8, s.height);
+          ctx.fill();
+
+          ctx.restore();
+        }
+
+        drawPitch() {
+          const ctx = this.ctx;
+          const s = this.stadium;
+
+          // Pitch with perspective
+          ctx.save();
+
+          // Create pitch gradient
+          const pitchGradient = ctx.createLinearGradient(
+            s.centerX,
+            s.height * 0.55,
+            s.centerX,
+            s.height * 0.7
+          );
+          pitchGradient.addColorStop(0, this.colors.grass);
+          pitchGradient.addColorStop(1, this.colors.darkGrass);
+
+          ctx.fillStyle = pitchGradient;
+          ctx.beginPath();
+          ctx.moveTo(s.width * 0.25, s.height * 0.7);
+          ctx.lineTo(s.width * 0.75, s.height * 0.7);
+          ctx.lineTo(s.width * 0.8, s.height * 0.9);
+          ctx.lineTo(s.width * 0.2, s.height * 0.9);
+          ctx.closePath();
+          ctx.fill();
+
+          // Add grass texture
+          this.drawGrassTexture();
+
+          ctx.restore();
+        }
+
+        drawGrassTexture() {
+          const ctx = this.ctx;
+          const s = this.stadium;
+
+          ctx.save();
+          ctx.strokeStyle = this.colors.darkGrass;
+          ctx.lineWidth = 1;
+          ctx.globalAlpha = 0.3;
+
+          // Draw grass blades
+          for (let i = 0; i < 200; i++) {
+            const x = s.width * (0.25 + Math.random() * 0.5);
+            const y = s.height * (0.7 + Math.random() * 0.2);
+            const length = 5 + Math.random() * 15;
+            const angle = Math.random() * Math.PI;
+
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(
+              x + Math.cos(angle) * length,
+              y + Math.sin(angle) * length
+            );
+            ctx.stroke();
+          }
+
+          ctx.restore();
+        }
+
+        drawSeating() {
+          const ctx = this.ctx;
+          const s = this.stadium;
+
+          ctx.save();
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+          ctx.lineWidth = 1;
+          ctx.globalAlpha = 0.5;
+
+          // Draw seating rows
+          for (let i = 0; i < 20; i++) {
+            const y = s.height * (0.7 - i * 0.01);
+
+            // Left stand
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(s.width * 0.2, y - s.height * 0.05);
+            ctx.stroke();
+
+            // Right stand
+            ctx.beginPath();
+            ctx.moveTo(s.width, y);
+            ctx.lineTo(s.width * 0.8, y - s.height * 0.05);
+            ctx.stroke();
+
+            // Bottom stand
+            ctx.beginPath();
+            ctx.moveTo(s.width * 0.2, y - s.height * 0.05);
+            ctx.lineTo(s.width * 0.8, y - s.height * 0.05);
+            ctx.stroke();
+          }
+
+          ctx.restore();
+        }
+
+        drawLights() {
+          const ctx = this.ctx;
+          const s = this.stadium;
+
+          ctx.save();
+          const intensity = 0.5 + Math.sin(this.time * 2) * 0.2;
+
+          // Draw floodlights
+          for (let i = 0; i < 8; i++) {
+            const x = i * (s.width / 8) + s.width / 16;
+            const y = s.height * 0.3;
+
+            // Light beam
+            const gradient = ctx.createRadialGradient(x, y, 10, x, y, 100);
+            gradient.addColorStop(0, `rgba(255, 255, 200, ${0.3 * intensity})`);
+            gradient.addColorStop(1, "rgba(255, 255, 200, 0)");
+
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(x, y, 100, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Light tower
+            ctx.fillStyle = "#666";
+            ctx.fillRect(x - 5, y - 5, 10, 20);
+          }
+
+          ctx.restore();
+        }
+
+        drawCrowd() {
+          const ctx = this.ctx;
+          const s = this.stadium;
+
+          ctx.save();
+          const wave = Math.sin(this.crowdAnimation) * 0.02;
+
+          // Draw crowd as colored dots
+          for (let i = 0; i < 300; i++) {
+            const side = Math.floor(i / 100);
+            let x, y;
+
+            if (side === 0) {
+              // Left stand
+              x = Math.random() * s.width * 0.2;
+              y = s.height * (0.7 - Math.random() * 0.3 + wave);
+            } else if (side === 1) {
+              // Right stand
+              x = s.width * 0.8 + Math.random() * s.width * 0.2;
+              y = s.height * (0.7 - Math.random() * 0.3 + wave);
+            } else {
+              // Bottom stand
+              x = s.width * 0.2 + Math.random() * s.width * 0.6;
+              y = s.height * (0.7 - Math.random() * 0.15 + wave);
+            }
+
+            // Alternate between blue and maroon for Barcelona colors
+            ctx.fillStyle = i % 2 === 0 ? this.colors.blue : this.colors.maroon;
+            ctx.globalAlpha = 0.6 + Math.random() * 0.4;
+            ctx.beginPath();
+            ctx.arc(x, y, 2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          ctx.restore();
+        }
+
+        drawPitchMarkings() {
+          const ctx = this.ctx;
+          const s = this.stadium;
+
+          ctx.save();
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
+          ctx.lineWidth = 2;
+          ctx.setLineDash([5, 5]);
+          ctx.globalAlpha = 0.6;
+
+          // Center circle
+          ctx.beginPath();
+          ctx.arc(s.centerX, s.height * 0.8, 30, 0, Math.PI * 2);
+          ctx.stroke();
+
+          // Center line
+          ctx.beginPath();
+          ctx.moveTo(s.width * 0.25, s.height * 0.8);
+          ctx.lineTo(s.width * 0.75, s.height * 0.8);
+          ctx.stroke();
+
+          // Penalty areas
+          ctx.beginPath();
+          ctx.rect(s.width * 0.3, s.height * 0.75, 40, 30);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.rect(s.width * 0.7 - 40, s.height * 0.75, 40, 30);
+          ctx.stroke();
+
+          ctx.restore();
+        }
+
+        drawScoreboard() {
+          const ctx = this.ctx;
+          const s = this.stadium;
+
+          ctx.save();
+
+          // Scoreboard background
+          ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+          ctx.fillRect(s.centerX - 100, s.height * 0.15, 200, 60);
+
+          // Scoreboard border
+          ctx.strokeStyle = this.colors.maroon;
+          ctx.lineWidth = 3;
+          ctx.strokeRect(s.centerX - 100, s.height * 0.15, 200, 60);
+
+          // Score text
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "bold 24px Arial";
+          ctx.textAlign = "center";
+          ctx.fillText("BARCELONA", s.centerX, s.height * 0.2);
+
+          ctx.font = "28px Arial";
+          ctx.fillText("99", s.centerX - 40, s.height * 0.3);
+          ctx.fillText("—", s.centerX, s.height * 0.3);
+          ctx.fillText("0", s.centerX + 40, s.height * 0.3);
+
+          ctx.restore();
+        }
+
+        animate() {
+          this.time += 0.01;
+          this.crowdAnimation += 0.05;
+          this.lightIntensity = 0.8 + Math.sin(this.time) * 0.2;
+
+          this.drawStadium();
+
+          requestAnimationFrame(() => this.animate());
+        }
+      }
+
+      // Terminal Typing Effect
+      class Terminal {
+        constructor() {
+          this.content = document.getElementById("terminal-content");
+          this.lines = [];
+          this.currentLine = 0;
+          this.typingSpeed = 30;
+          this.lineDelay = 800;
+          this.commands = [
+            {
+              prompt: "Microsoft Windows [Version 10.0.22631.6199]",
+              type: "system",
+            },
+            {
+              prompt: "(c) Microsoft Corporation. All rights reserved.",
+              type: "system",
+            },
+            {
+              prompt: "",
+              type: "empty",
+            },
+
+            {
+              prompt: "C:\\Users\\HI>",
+              command: "cd camp-nou-stadium",
+              type: "command",
+            },
+            {
+              prompt: "",
+              type: "empty",
+            },
+            {
+              prompt: "C:\\Users\\HI\\camp-nou-stadium>",
+              type: "path",
+            },
+            {
+              prompt: "",
+              type: "empty",
+            },
+            {
+              prompt: "C:\\Users\\HI\\camp-nou-stadium>",
+              command: "echo Camp Nou Stadium Background Loaded",
+              type: "command",
+            },
+            {
+              prompt: "Camp Nou Stadium Background Loaded",
+              type: "system",
+            },
+            {
+              prompt: "",
+              type: "empty",
+            },
+            {
+              prompt: "C:\\Users\\HI\\camp-nou-stadium>",
+              command: "type birthday_message.txt",
+              type: "command",
+            },
+            {
+              prompt: "",
+              type: "empty",
+            },
+            {
+              prompt: "==========================================",
+              type: "system",
+              birthday: true,
+            },
+            {
+              prompt: "       HAPPY 23rd BIRTHDAY,BUJJI KONDA!              ",
+              type: "system",
+              birthday: true,
+            },
+            {
+              prompt: "==========================================",
+              type: "system",
+              birthday: true,
+            },
+            {
+              prompt: "",
+              type: "empty",
+              birthday: true,
+            },
+            {
+              prompt: "Today, 23 years ago, someone amazing was born.",
+              type: "message",
+              delay: 40,
+              birthday: true,
+            },
+            {
+              prompt: "Like Camp Nou on match day, your presence",
+              type: "message",
+              delay: 40,
+              birthday: true,
+            },
+            {
+              prompt: "lights up every room you enter.",
+              type: "message",
+              delay: 40,
+              birthday: true,
+            },
+            {
+              prompt: "",
+              type: "empty",
+              birthday: true,
+            },
+            {
+              prompt: "May your 23rd year be filled with victories,",
+              type: "message",
+              delay: 40,
+              birthday: true,
+            },
+            {
+              prompt: "joy, and unforgettable moments.",
+              type: "message",
+              delay: 40,
+              birthday: true,
+            },
+            {
+              prompt: "",
+              type: "empty",
+              birthday: true,
+            },
+            {
+              prompt: "Here's to you - may your journey ahead",
+              type: "message",
+              delay: 40,
+              birthday: true,
+            },
+            {
+              prompt: "be as legendary as this stadium!",
+              type: "message",
+              delay: 40,
+              birthday: true,
+            },
+            {
+              prompt: "",
+              type: "empty",
+              birthday: true,
+            },
+            {
+              prompt: "🎉 ¡Feliz Cumpleaños! 🎉",
+              type: "message",
+              delay: 60,
+              birthday: true,
+            },
+            {
+              prompt: "",
+              type: "empty",
+              birthday: true,
+            },
+            {
+              prompt: "==========================================",
+              type: "system",
+              birthday: true,
+            },
+            {
+              prompt: "",
+              type: "empty",
+            },
+            {
+              prompt: "C:\\Users\\HI\\camp-nou-stadium>",
+              type: "path",
+            },
+            {
+              prompt: "",
+              type: "empty",
+            },
+            {
+              prompt: "",
+              type: "empty",
+            },
+          ];
+        }
+
+        createLineElement(line) {
+          const lineElement = document.createElement("div");
+          if (line.birthday) {
+            lineElement.className = "terminal-line birthday-text";
+          } else {
+            lineElement.className = "terminal-line";
+          }
+
+          switch (line.type) {
+            case "system":
+              lineElement.innerHTML = `<span class="system">${line.prompt}</span>`;
+              break;
+            case "command":
+              lineElement.innerHTML = `
+                            <span class="prompt">${line.prompt}</span>
+                            <span class="command">${line.command}</span>
+                        `;
+              break;
+            case "error":
+              lineElement.innerHTML = `<span class="error">${line.prompt}</span>`;
+              break;
+            case "path":
+              lineElement.innerHTML = `<span class="path">${line.prompt}</span>`;
+              break;
+            case "message":
+              lineElement.innerHTML = `<span class="message">${line.prompt}</span>`;
+              break;
+            case "empty":
+              lineElement.innerHTML = "&nbsp;";
+              break;
+          }
+
+          return lineElement;
+        }
+
+        typeText(element, text, speed, callback) {
+          let i = 0;
+          element.innerHTML = "";
+
+          const typeChar = () => {
+            if (i < text.length) {
+              element.innerHTML += text.charAt(i);
+              i++;
+              setTimeout(typeChar, speed);
+            } else if (callback) {
+              setTimeout(callback, 200);
+            }
+          };
+
+          typeChar();
+        }
+
+        addLine(line) {
+          const lineElement = this.createLineElement(line);
+          this.content.appendChild(lineElement);
+
+          // Scroll to show new line
+          this.content.scrollTop = this.content.scrollHeight;
+
+          if (line.command) {
+            const commandElement = lineElement.querySelector(".command");
+            if (commandElement) {
+              this.typeText(
+                commandElement,
+                line.command,
+                this.typingSpeed,
+                () => {
+                  setTimeout(() => {
+                    this.currentLine++;
+                    this.processNextLine();
+                  }, 300);
+                }
+              );
+            }
+          } else if (line.type !== "empty") {
+            const textElement = lineElement.querySelector("span");
+            if (textElement) {
+              const speed = line.delay || this.typingSpeed;
+              this.typeText(textElement, line.prompt, speed, () => {
+                setTimeout(
+                  () => {
+                    this.currentLine++;
+                    this.processNextLine();
+                  },
+                  line.type === "message" ? 300 : 100
+                );
+              });
+            } else {
+              this.currentLine++;
+              setTimeout(() => this.processNextLine(), this.lineDelay);
+            }
+          } else {
+            this.currentLine++;
+            setTimeout(() => this.processNextLine(), this.lineDelay);
+          }
+        }
+
+        addContinueIndicator() {
+          const continueLine = document.createElement("div");
+          continueLine.className = "terminal-line continue-line";
+
+          const indicator = document.createElement("div");
+          indicator.className = "next-indicator";
+          indicator.innerHTML = `
+            <div>📬 <strong>Message Incoming...</strong></div>
+            <div style="margin-top: 10px;">⌨️ Press <kbd>ENTER</kbd> or click here to continue</div>
+            <div class="key-hint">(There's more waiting for you...)</div>
+          `;
+
+          indicator.addEventListener("click", () => this.goToNextPage());
+          continueLine.appendChild(indicator);
+
+          this.content.appendChild(continueLine);
+          this.content.scrollTop = this.content.scrollHeight;
+
+          // Also listen for Enter key
+          document.addEventListener(
+            "keydown",
+            (e) => {
+              if (e.key === "Enter" || e.keyCode === 13) {
+                this.goToNextPage();
+              }
+            },
+            { once: true }
+          );
+        }
+
+        goToNextPage() {
+          // Clear the terminal with a cool effect
+          const terminal = document.getElementById("terminal");
+          terminal.style.opacity = "0";
+          terminal.style.transition = "opacity 0.5s";
+
+          // Show VR instruction message FIRST
+          const vrInstructions = document.createElement("div");
+          vrInstructions.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  `;
+
+          vrInstructions.innerHTML = `
+    <div style="
+      background: rgba(12, 12, 12, 0.95);
+      border: 1px solid #555;
+      border-radius: 3px;
+      padding: 30px;
+      max-width: 600px;
+      font-family: 'Consolas', 'Monaco', monospace;
+      color: #ccc;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.9);
+    ">
+      <div style="margin-bottom: 20px;">
+        <span style="color: #4af626; font-weight: bold;">C:\\Users\\HI\\camp-nou-stadium></span>
+        <span style="color: #ddd;">launch_vr_experience.exe</span>
+      </div>
+      <div style="color: #4af626; margin-bottom: 20px; font-size: 18px; font-weight: bold;">
+        WE ARE CURRENTLY AT YOUR FAVOURITE PLACE,
+      </div>
+      <div style="color: #4af626; margin-bottom: 20px; font-size: 22px; font-weight: bold; text-align: center;">
+        THE CAMP NOU STADIUM!!
+      </div>
+      <div style="color: #ddd; margin-bottom: 25px; font-size: 16px; line-height: 1.5;">
+        You're about to enter the Camp Nou 360° VR experience.<br>
+        <span style="color: #4af626;">•</span> Use your mouse to look around<br>
+        <span style="color: #4af626;">•</span> Scroll to zoom in/out<br>
+        <span style="color: #4af626;">•</span> Explore every corner of the stadium!<br>
+        <br>
+        <span style="color: #ffd700;">When you're done exploring, close the VR tab to return.</span>
+      </div>
+      <div style="margin-top: 25px; text-align: center;">
+        <button onclick="window.open('https://www.360cities.net/image/camp-nou-stadium/vr', '_blank')" 
+                style="
+                  background: #4af626;
+                  color: #000;
+                  border: none;
+                  padding: 12px 30px;
+                  font-family: 'Consolas', monospace;
+                  font-size: 16px;
+                  font-weight: bold;
+                  border-radius: 3px;
+                  cursor: pointer;
+                  transition: all 0.3s;
+                "
+                onmouseover="this.style.background='#7af856'"
+                onmouseout="this.style.background='#4af626'">
+          LAUNCH VR EXPERIENCE
+        </button>
+        <div style="margin-top: 25px;">
+          <button onclick="window.location.href='barcelona-messages.html'"
+                  style="
+                    background: transparent;
+                    color: #4af626;
+                    border: 1px solid #4af626;
+                    padding: 10px 25px;
+                    font-family: 'Consolas', monospace;
+                    font-size: 14px;
+                    border-radius: 3px;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                  "
+                  onmouseover="this.style.background='rgba(74, 246, 38, 0.1)'"
+                  onmouseout="this.style.background='transparent'">
+            <ion-icon name="mail" style="vertical-align: middle; margin-right: 8px;"></ion-icon>
+            Skip to Messages from Team
+          </button>
+          <div style="margin-top: 10px; color: #999; font-size: 11px;">
+            (Will take you directly to player messages)
+          </div>
+        </div>
+        <div style="margin-top: 25px;">
+          <button onclick="window.location.href='personal-message.html'"
+                  style="
+                    background: transparent;
+                    color: #ff6b8b;
+                    border: 1px solid #ff6b8b;
+                    padding: 10px 25px;
+                    font-family: 'Consolas', monospace;
+                    font-size: 14px;
+                    border-radius: 3px;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                    margin-top: 10px;
+                  "
+                  onmouseover="this.style.background='rgba(255, 107, 139, 0.1)'"
+                  onmouseout="this.style.background='transparent'">
+            <ion-icon name="heart" style="vertical-align: middle; margin-right: 8px;"></ion-icon>
+            Personal Message from Friend
+          </button>
+          <div style="margin-top: 10px; color: #999; font-size: 11px;">
+            (A special personal message just for you!)
+          </div>
+        </div>
+        <div style="margin-top: 15px; color: #999; font-size: 12px;">
+          <span style="color: #4af626;">↗</span> Will open in new tab
+        </div>
+      </div>
+    </div>
+  `;
+
+          document.body.appendChild(vrInstructions);
+        }
+
+        processNextLine() {
+          if (this.currentLine < this.commands.length) {
+            this.addLine(this.commands[this.currentLine]);
+          } else {
+            // Add blinking cursor at the end
+            const cursorElement = document.createElement("div");
+            cursorElement.className = "terminal-line";
+            cursorElement.innerHTML = `
+                        <span class="path">C:\\Users\\HI\\camp-nou-stadium></span>
+                        <span class="interactive-cursor"></span>
+                    `;
+            this.content.appendChild(cursorElement);
+            this.content.scrollTop = this.content.scrollHeight;
+
+            // Add the continue indicator after a short delay
+            setTimeout(() => {
+              this.addContinueIndicator();
+            }, 1000);
+          }
+        }
+
+        start() {
+          setTimeout(() => {
+            this.processNextLine();
+          }, 1000);
+        }
+      }
+
+      // Initialize everything when page loads
+      window.onload = function () {
+        // Initialize stadium background
+        const stadium = new StadiumBackground();
+
+        // Initialize terminal
+        const terminal = new Terminal();
+        terminal.start();
+
+        // Add interactivity to terminal buttons
+        document.querySelectorAll(".terminal-button").forEach((button) => {
+          button.addEventListener("click", function () {
+            const terminal = document.getElementById("terminal");
+            if (this.classList.contains("close")) {
+              terminal.style.opacity = "0.7";
+              terminal.style.transition = "opacity 0.3s";
+            } else if (this.classList.contains("minimize")) {
+              terminal.style.transform = "translate(-50%, -50%) scale(0.9)";
+              terminal.style.transition = "transform 0.3s";
+            } else if (this.classList.contains("maximize")) {
+              terminal.style.transform = "translate(-50%, -50%) scale(1)";
+              terminal.style.transition = "transform 0.3s";
+            }
+          });
+        });
+
+        // Add keyboard shortcuts for clearing
+        document.addEventListener("keydown", (e) => {
+          if (e.ctrlKey && e.key === "l") {
+            // Clear terminal
+            document.getElementById("terminal-content").innerHTML = "";
+            terminal.currentLine = 0;
+            terminal.start();
+          }
+        });
+      };
+    </script>
+  </body>
+</html>

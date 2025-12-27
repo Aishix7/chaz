@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>For Bujji Konda</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- GSAP & Lenis for smooth scrolling -->
+    <script src="https://unpkg.com/lenis@1.0.45/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+      /* Clean reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #0a0a0a;
+        color: #f5f5f5;
+        overflow-x: hidden;
+        height: 600vh; /* 6 sections x 100vh */
+      }
+
+      /* Main gallery container - fixed position */
+      #gallery {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        background: #0a0a0a;
+      }
+
+      /* Column layouts */
+      .col-left {
+        width: 25%;
+        height: 100%;
+        padding: 20px 10px 20px 20px;
+      }
+
+      .col-nav {
+        width: 4%;
+        height: 100%;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        background-color: rgba(10, 10, 10, 0.9);
+        z-index: 10;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .col-right {
+        width: 71%;
+        height: 100%;
+        display: flex;
+        padding: 20px 20px 20px 10px;
+      }
+
+      /* Column hover effects */
+      .col-nav:hover {
+        width: 12%;
+      }
+
+      /* Image columns */
+      .img-col {
+        flex: 1;
+        padding: 0 10px;
+        position: relative;
+      }
+
+      .col-right .img-col {
+        width: 50%;
+      }
+
+      /* Reverse column styling */
+      #col2 {
+        display: flex;
+        flex-direction: column-reverse;
+      }
+
+      /* Image items */
+      .img-item {
+        width: 100%;
+        height: calc(100vh / 3 - 16px);
+        min-height: 65vh;
+        margin-bottom: 16px;
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .img-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .img-item:hover img {
+        transform: scale(1.08);
+      }
+
+      /* Final message card */
+      .final-message-card {
+        background: linear-gradient(
+          135deg,
+          rgba(26, 35, 50, 0.95) 0%,
+          rgba(40, 30, 45, 0.95) 100%
+        );
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        text-align: center;
+        font-size: 20px;
+        font-weight: 500;
+        color: #ffffff;
+        line-height: 1.4;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+      }
+
+      .final-message-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #8a715e, transparent);
+      }
+
+      .final-message-card:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(30, 40, 55, 0.95) 0%,
+          rgba(45, 35, 50, 0.95) 100%
+        );
+        border-color: rgba(138, 113, 94, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      }
+
+      .final-text {
+        font-family: "Playfair Display", serif;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        color: #d4c6b8;
+      }
+
+      /* Navigation styling */
+      .nav-container {
+        height: 80%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .nav-item {
+        width: 100%;
+        aspect-ratio: 1/1;
+        border-radius: 4px;
+        overflow: hidden;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
+        position: relative;
+        opacity: 0.6;
+      }
+
+      .nav-item.active {
+        opacity: 1;
+        border-color: #8a715e;
+      }
+
+      .nav-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.9);
+      }
+
+      .nav-item.active img {
+        filter: brightness(1);
+      }
+
+      .nav-label {
+        position: absolute;
+        left: 120%;
+        top: 50%;
+        transform: translateY(-50%);
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        font-size: 11px;
+        color: #d4c6b8;
+        font-weight: 500;
+        background: rgba(10, 10, 10, 0.9);
+        padding: 6px 12px;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        font-family: "Inter", sans-serif;
+      }
+
+      .col-nav:hover .nav-label {
+        opacity: 1;
+      }
+
+      /* Minimap hover behavior */
+      .col-nav:hover ~ .col-left .img-item,
+      .col-nav:hover ~ .col-right .img-item {
+        height: calc(100vh / 6 - 16px);
+        transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Fade overlays */
+      .fade-top,
+      .fade-bottom {
+        position: fixed;
+        left: 0;
+        width: 100%;
+        height: 120px;
+        pointer-events: none;
+        z-index: 5;
+      }
+
+      .fade-top {
+        top: 0;
+        background: linear-gradient(
+          to bottom,
+          rgba(10, 10, 10, 1) 0%,
+          rgba(10, 10, 10, 0.7) 50%,
+          rgba(10, 10, 10, 0) 100%
+        );
+      }
+
+      .fade-bottom {
+        bottom: 0;
+        background: linear-gradient(
+          to top,
+          rgba(10, 10, 10, 1) 0%,
+          rgba(10, 10, 10, 0.7) 50%,
+          rgba(10, 10, 10, 0) 100%
+        );
+      }
+
+      /* Back to Terminal Button */
+      .back-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(138, 113, 94, 0.9);
+        color: #ffffff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        font-family: "Inter", sans-serif;
+        font-weight: 500;
+        cursor: pointer;
+        z-index: 100;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .back-button:hover {
+        background: rgba(155, 135, 120, 0.9);
+        transform: translateY(-1px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Final Message Overlay */
+      .message-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(10, 10, 10, 0.95);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+      }
+
+      .message-content {
+        background: linear-gradient(
+          135deg,
+          rgba(20, 25, 35, 0.95) 0%,
+          rgba(35, 30, 40, 0.95) 100%
+        );
+        padding: 50px;
+        border-radius: 12px;
+        max-width: 600px;
+        width: 90%;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        position: relative;
+        transform: translateY(20px);
+        opacity: 0;
+      }
+
+      .message-content::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #8a715e, transparent);
+      }
+
+      .message-title {
+        font-family: "Playfair Display", serif;
+        font-size: 32px;
+        font-weight: 600;
+        color: #d4c6b8;
+        margin-bottom: 30px;
+        letter-spacing: 1px;
+      }
+
+      .message-text {
+        font-size: 18px;
+        line-height: 1.8;
+        color: #b8b0a8;
+        margin-bottom: 40px;
+        font-family: "Inter", sans-serif;
+        font-weight: 400;
+      }
+
+      .close-message {
+        background: transparent;
+        color: #8a715e;
+        border: 1px solid rgba(138, 113, 94, 0.5);
+        padding: 12px 30px;
+        border-radius: 4px;
+        font-family: "Inter", sans-serif;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 16px;
+      }
+
+      .close-message:hover {
+        background: rgba(138, 113, 94, 0.2);
+        border-color: #8a715e;
+      }
+
+      /* Loading animation */
+      .loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #0a0a0a;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        transition: opacity 0.5s ease;
+      }
+
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 3px solid rgba(138, 113, 94, 0.3);
+        border-top-color: #8a715e;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 1200px) {
+        .col-left {
+          width: 30%;
+        }
+
+        .col-nav {
+          width: 5%;
+        }
+
+        .col-right {
+          width: 65%;
+        }
+
+        .col-nav:hover {
+          width: 15%;
+        }
+      }
+
+      @media (max-width: 768px) {
+        #gallery {
+          flex-direction: column;
+        }
+
+        .col-left {
+          width: 100%;
+          height: 40%;
+        }
+
+        .col-nav {
+          width: 100%;
+          height: 10%;
+        }
+
+        .col-right {
+          width: 100%;
+          height: 50%;
+        }
+
+        .nav-container {
+          flex-direction: row;
+          overflow-x: auto;
+          padding: 0 10px;
+        }
+
+        .nav-label {
+          top: 110%;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+
+        .message-content {
+          padding: 30px 20px;
+        }
+
+        .message-title {
+          font-size: 24px;
+        }
+
+        .message-text {
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loading Screen -->
+    <div class="loading" id="loading">
+      <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Back Button -->
+    <button class="back-button" onclick="window.location.href='index.html'">
+      ← Back to Terminal
+    </button>
+
+    <!-- Fade Overlays -->
+    <div class="fade-top"></div>
+    <div class="fade-bottom"></div>
+
+    <!-- Final Message Overlay -->
+    <div class="message-overlay" id="messageOverlay">
+      <div class="message-content" id="messageContent">
+        <h2 class="message-title">To Bujji Konda</h2>
+        <div class="message-text">
+          <p>
+            As you turn 23, I wanted to create something that captures the
+            essence of our journey together.
+          </p>
+          <p>
+            Every photo tells a story – of laughter shared, adventures embarked
+            upon, and moments that became memories.
+          </p>
+          <p>
+            In a world that constantly changes, some things remain constant: the
+            bond we share, the understanding between us, and the knowledge that
+            no matter where life takes us, this friendship is a constant source
+            of strength and joy.
+          </p>
+          <p>
+            May this year bring you closer to your dreams, surround you with
+            love, and fill your days with the same happiness you bring to
+            others.
+          </p>
+          <p>
+            Here's to more adventures, more laughter, and more beautiful
+            memories in the making.
+          </p>
+        </div>
+        <button class="close-message" id="closeMessage">Continue</button>
+      </div>
+    </div>
+
+    <!-- Main Gallery -->
+    <div id="gallery">
+      <!-- Left Column -->
+      <div class="col-left">
+        <div class="img-col" id="col1"></div>
+      </div>
+
+      <!-- Navigation Column -->
+      <div class="col-nav">
+        <div class="nav-container">
+          <div class="nav-item" data-section="0">
+            <img src="ch8.jpeg" alt="Slide 1" />
+            <span class="nav-label">Slide 1</span>
+          </div>
+          <div class="nav-item" data-section="1">
+            <img src="ch2.jpeg" alt="Slide 2" />
+            <span class="nav-label">Slide 2</span>
+          </div>
+          <div class="nav-item" data-section="2">
+            <img src="ch9.jpeg" alt="Slide 3" />
+            <span class="nav-label">Slide 3</span>
+          </div>
+          <div class="nav-item" data-section="3">
+            <img src="ch13.jpeg" alt="Slide 4" />
+            <span class="nav-label">Slide 4</span>
+          </div>
+          <div class="nav-item" data-section="4">
+            <img src="ch16.jpeg" alt="Slide 5" />
+            <span class="nav-label">Slide 5</span>
+          </div>
+          <div class="nav-item" data-section="5">
+            <img src="ch17.jpeg" alt="Slide 6" />
+            <span class="nav-label">Slide 6</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Columns -->
+      <div class="col-right">
+        <div class="img-col" id="col2"></div>
+        <div class="img-col" id="col3"></div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // List of ALL 17 images
+        const allImages = [
+          "ch1.jpeg",
+          "ch2.jpeg",
+          "ch3.jpeg",
+          "ch4.jpeg",
+          "ch5.jpeg",
+          "ch6.jpeg",
+          "ch7.jpeg",
+          "ch8.jpeg",
+          "ch9.jpeg",
+          "ch10.jpeg",
+          "ch11.jpeg",
+          "ch12.jpeg",
+          "ch13.jpeg",
+          "ch14.jpeg",
+          "ch15.jpeg",
+          "ch16.jpeg",
+          "ch17.jpeg",
+        ];
+
+        // Get DOM elements
+        const loading = document.getElementById("loading");
+        const messageOverlay = document.getElementById("messageOverlay");
+        const messageContent = document.getElementById("messageContent");
+        const closeMessage = document.getElementById("closeMessage");
+        const col1 = document.getElementById("col1");
+        const col2 = document.getElementById("col2");
+        const col3 = document.getElementById("col3");
+        const navItems = document.querySelectorAll(".nav-item");
+        const sections = navItems.length;
+
+        // Initialize smooth scrolling
+        const lenis = new Lenis({
+          duration: 1.8,
+          easing: (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+          direction: "vertical",
+          smooth: true,
+          mouseMultiplier: 1.2,
+          touchMultiplier: 2,
+        });
+
+        // Register ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Sync scrolling
+        lenis.on("scroll", ScrollTrigger.update);
+        gsap.ticker.add((time) => lenis.raf(time * 1000));
+        gsap.ticker.lagSmoothing(0);
+
+        // Function to shuffle array
+        function shuffleArray(array) {
+          const shuffled = [...array];
+          for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+          }
+          return shuffled;
+        }
+
+        // Function to generate column items
+        function generateColumnItems(
+          columnElement,
+          isReverse = false,
+          isLastColumn = false
+        ) {
+          columnElement.innerHTML = "";
+
+          // Create shuffled image arrays for each column (using all 17 images)
+          const columnImages = shuffleArray([...allImages]);
+          let imageIndex = 0;
+
+          // We need 18 images total (6 sections × 3 images each)
+          const totalImagesNeeded = 18;
+
+          // Duplicate images if needed (we have 17, need 18)
+          const availableImages = [...allImages];
+          while (availableImages.length < totalImagesNeeded) {
+            availableImages.push(...allImages);
+          }
+
+          const shuffledImages = shuffleArray(
+            availableImages.slice(0, totalImagesNeeded)
+          );
+
+          for (let section = 0; section < sections; section++) {
+            for (let i = 0; i < 3; i++) {
+              const imgItem = document.createElement("div");
+              imgItem.className = "img-item";
+              imgItem.setAttribute("data-section", section);
+
+              // Check if this is the last section and last position (for final message)
+              if (section === 5 && i === 2 && isLastColumn) {
+                imgItem.classList.add("final-message-card");
+                imgItem.innerHTML = `
+                  <div class="final-text">Something to see →</div>
+                `;
+
+                // Add click event for final message
+                imgItem.addEventListener("click", showFinalMessage);
+              } else {
+                // Regular image - use the shuffled image
+                const img = document.createElement("img");
+                img.src = shuffledImages[section * 3 + i];
+                img.alt = `Memory ${section * 3 + i + 1}`;
+
+                // Preload image for better performance
+                const imgLoader = new Image();
+                imgLoader.src = shuffledImages[section * 3 + i];
+
+                imgItem.appendChild(img);
+              }
+
+              if (isReverse) {
+                columnElement.prepend(imgItem);
+              } else {
+                columnElement.appendChild(imgItem);
+              }
+            }
+          }
+        }
+
+        // Generate content for all columns
+        generateColumnItems(col1, false, false);
+        generateColumnItems(col2, true, false);
+        generateColumnItems(col3, false, true);
+
+        // Set up animations
+        function setupAnimations() {
+          const distance = (sections - 1) * window.innerHeight;
+
+          // Animation for columns
+          gsap.to(col1, {
+            y: -distance,
+            ease: "none",
+            scrollTrigger: {
+              trigger: "body",
+              start: "top top",
+              end: "bottom bottom",
+              scrub: true,
+            },
+          });
+
+          gsap.to(col2, {
+            y: distance,
+            ease: "none",
+            scrollTrigger: {
+              trigger: "body",
+              start: "top top",
+              end: "bottom bottom",
+              scrub: true,
+            },
+          });
+
+          gsap.to(col3, {
+            y: -distance,
+            ease: "none",
+            scrollTrigger: {
+              trigger: "body",
+              start: "top top",
+              end: "bottom bottom",
+              scrub: true,
+            },
+          });
+        }
+
+        // Update navigation
+        function updateNav() {
+          const scrollPos = window.scrollY;
+          const viewportHeight = window.innerHeight;
+          const threshold = 0.4;
+          const section = Math.min(
+            Math.floor(
+              (scrollPos + viewportHeight * threshold) / viewportHeight
+            ),
+            sections - 1
+          );
+
+          navItems.forEach((item, i) => {
+            item.classList.toggle("active", i === section);
+          });
+        }
+
+        // Show final message
+        function showFinalMessage() {
+          messageOverlay.style.display = "flex";
+          gsap.to(messageContent, {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            ease: "power2.out",
+          });
+        }
+
+        // Hide final message
+        function hideFinalMessage() {
+          gsap.to(messageContent, {
+            y: 20,
+            opacity: 0,
+            duration: 0.4,
+            ease: "power2.in",
+            onComplete: () => {
+              messageOverlay.style.display = "none";
+            },
+          });
+        }
+
+        // Event listeners
+        closeMessage.addEventListener("click", hideFinalMessage);
+        messageOverlay.addEventListener("click", (e) => {
+          if (e.target === messageOverlay) hideFinalMessage();
+        });
+
+        // Add navigation click events
+        navItems.forEach((item, i) => {
+          item.addEventListener("click", () => {
+            lenis.scrollTo(i * window.innerHeight, {
+              duration: 1.2,
+            });
+          });
+        });
+
+        // Update navigation on scroll
+        window.addEventListener("scroll", updateNav);
+
+        // Initialize
+        setupAnimations();
+        updateNav();
+
+        // Hide loading screen after images load
+        const imagePromises = allImages.map((src) => {
+          return new Promise((resolve) => {
+            const img = new Image();
+            img.src = src;
+            img.onload = resolve;
+            img.onerror = resolve; // Resolve even if image fails to load
+          });
+        });
+
+        Promise.all(imagePromises).then(() => {
+          setTimeout(() => {
+            gsap.to(loading, {
+              opacity: 0,
+              duration: 0.5,
+              onComplete: () => {
+                loading.style.display = "none";
+              },
+            });
+          }, 500);
+        });
+
+        // Handle resize
+        window.addEventListener("resize", () => {
+          ScrollTrigger.refresh();
+          updateNav();
+        });
+      });
+    </script>
+  </body>
+</html>
